@@ -1,0 +1,1986 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 4647
+>>
+stream
+0.5670000000000001 w
+0 G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 771.0238582677164914 Td
+(Software Requirements Specification \(SRS\) – SKILL MENTOR:) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 745.5120472440944468 Td
+(DEFINITION:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 720.0002362204724022 Td
+(A software requirements specification \(SRS\) is a document that describes what the software will do and how) Tj
+T* (it will be expected to perform. It also describes the functionality the product needs to fulfill all stakeholders) Tj
+T* (\(business, users\) needs.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 677.480551181102328 Td
+(PURPOSE:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 651.9687401574802834 Td
+(The purpose of this SRS document is to provide a detailed overview of our software product, its parameters) Tj
+T* (and goals. This document describes the project's target audience and its user interface, hardware and) Tj
+T* (software requirements. It lays out the functional and non-functional requirements of a system that is used for) Tj
+T* (describing the user interactions.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 596.69314960629913 Td
+(Template of SRS:) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 579.6852755905511003 Td
+(Table of contents) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 554.1734645669291695 Td
+(1. Introduction) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 537.1655905511811397 Td
+(2. Purpose) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 520.1577165354329964 Td
+(3. Product Scope) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 503.1498425196849666 Td
+(4. Document Conventions) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 486.1419685039369369 Td
+(5. References) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 469.1340944881889072 Td
+(6. Overview) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 440.7876377952755433 Td
+(7. Overall Description) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 423.7797637795275136 Td
+(8. Product Perspective) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 406.7718897637794839 Td
+(9. Product Functions) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 389.7640157480314542 Td
+(10. User Characteristics) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 372.7561417322834245 Td
+(11. Design and Implementation Constraints) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 355.7482677165353948 Td
+(12. Assumptions and Dependencies) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 327.4018110236220309 Td
+(13. System Features) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 310.3939370078740012 Td
+(14. System Features one by one) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 282.0474803149605805 Td
+(15. External Interface Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 265.0396062992125508 Td
+(16. User Interfaces) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 248.0317322834645211 Td
+(17. Hardware Interfaces) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 231.0238582677164914 Td
+(18. Software Interfaces) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 214.0159842519684616 Td
+(19. Communications Interfaces) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 185.6695275590550409 Td
+(20. Other Nonfunctional Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 160.1577165354329964 Td
+(21. Performance Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 143.1498425196849666 Td
+(22. Security Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 126.1419685039369369 Td
+(23. Safety Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 109.1340944881889072 Td
+(24. Software Quality Attributes) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 92.1262204724408775 Td
+(25. Business Rules) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 4849
+>>
+stream
+1.4173228346456694 w
+0. G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 771.0238582677164914 Td
+(26. Other Requirements) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 734.1734645669291695 Td
+(SRS For SKILL MENTOR:) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 708.6616535433070112 Td
+(1. Introduction) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 683.1498425196850803 Td
+(Skill Mentor is a personalized skill learning and mentoring platform designed for students and self-learners.) Tj
+T* (Unlike traditional e-learning platforms that focus purely on content delivery, Skill Mentor acts as a personal AI) Tj
+T* (mentor for every learner, guiding them through learning, practice, revision, and assessment for each skill they) Tj
+T* (choose to develop. Through Skill Mentor, learners interact with a dedicated AI assistant that provides) Tj
+T* (curriculum-aligned explanations, adaptive assignments, and revision aids for every subject or skill they are) Tj
+T* (studying.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 591.0238582677164914 Td
+(2. Purpose) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 565.5120472440944468 Td
+(This document is intended for the following group of people: -) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 548.5041732283464171 Td
+(• Developers for the purpose of design, development, maintenance, and future enhancement of the software.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 531.4962992125983874 Td
+(• Documentation writers.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 514.4884251968503577 Td
+(• Project mentors, evaluators, and academic reviewers.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 497.480551181102328 Td
+(• Testers.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 469.1340944881889072 Td
+(3. Scope) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 443.6222834645668627 Td
+(This document applies to the Skill Mentor AI software. This software offers benefits such as AI-guided skill) Tj
+T* (learning, instant doubt clarification, adaptive assignment generation, automatic mind map and mnemonic) Tj
+T* (creation, and collaborative learning with friends. It also allows learners to combine two or more related skills) Tj
+T* (to receive interdisciplinary learning recommendations.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 388.3466929133857661 Td
+(The software takes as input the learner’s registered account credentials and their skill selection for login. The) Tj
+T* (outputs then comprise an interactive dashboard that lets the learner select the skill, ask doubts, receive) Tj
+T* (assignments, and access learning aids for that session.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 345.8270078740156919 Td
+(The software is expected to be completed within a duration of 6 months as an academic project, developed) Tj
+T* (and maintained by the project team.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 304.7246456692912489 Td
+(4. Definitions, Acronyms, and Abbreviations) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 279.2128346456692043 Td
+(AIArtificial Intelligence) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 262.2049606299211746 Td
+(API Application Programming Interface) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 245.1970866141731449 Td
+(LMSLearning Management System used to organise and deliver structured skill content) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 228.1892125984251152 Td
+(NLP Natural Language Processing, used to interpret and respond to learner questions CMSContent) Tj
+T* (Management System used to store and manage textbooks and reference material) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 198.4254330708660063 Td
+(MLMachine Learning; UI A visual interface through which the learner interacts with the platform; Session) Tj
+T* (LogA time-stamped record of a learner’s activity, used for progress tracking.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 157.3230708661416202 Td
+(MBMega Bytes) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 140.3151968503935905 Td
+(MsMilliseconds.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 123.3073228346455608 Td
+(SecSeconds) Tj
+ET
+endstream
+endobj
+7 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 8 0 R
+>>
+endobj
+8 0 obj
+<<
+/Length 4943
+>>
+stream
+1.4173228346456694 w
+0. G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 771.0238582677164914 Td
+(5. References) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 734.1734645669291695 Td
+(The references for the above software are as follows: -) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 717.1655905511811397 Td
+(1. www.google.co.in) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 700.15771653543311 Td
+(2. www.wikipedia.com) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 660.4726771653542983 Td
+(6. Overview) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 623.6222834645668627 Td
+(Section 1.0 discusses the purpose and scope of the software.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 606.614409448818833 Td
+(Section 2.0 describes the overall functionalities and constraints of the software and user characteristics.) Tj
+T* (Section 3.0 and 4.0 details all the requirements needed to design the software.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 565.5120472440944468 Td
+(7. The Overall Description) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 528.6616535433070112 Td
+(8. Product Perspective) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 500.3151968503936473 Td
+(Skill Mentor is a single, unified learning ecosystem consisting of various functional subcomponents. This) Tj
+T* (software allows the learner to access a personalised AI mentor for every skill remotely through a web) Tj
+T* (application. This software also allows the learner to perform various other functions apart from just learning a) Tj
+T* (skill, such as doubt clarification, assignment generation, and revision aid creation. Some of its core software) Tj
+T* (components are the skill-tracking module, the AI mentor engine, the assignment generator, the learning-aid) Tj
+T* (generator, the collaboration module, and the analytics dashboard.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 396.850629921259781 Td
+(9. Product Functions) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 371.3388188976377364 Td
+(The major functions that Skill Mentor performs are described as follows: -) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 342.9923622047243725 Td
+(• Skill Selection: The dashboard provides the learner with a list of skills from which they can select any one in) Tj
+T* (order to begin a learning session. After skill selection, the learner is prompted with an option to set the) Tj
+T* (selected skill as their default focus so that they are not shown the selection screen in future sessions, thus) Tj
+T* (making the experience a bit faster. The learner also has the freedom to switch to a different skill mentioned in) Tj
+T* (the list at any point during that session.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 274.9608661417322537 Td
+(• Skill Profile Management: The various functions that a learner can perform within their skill profile are as) Tj
+T* (follows: - Proficiency Level: - The learner has the freedom to set or update their current proficiency level for) Tj
+T* (the selected skill, i.e., whether they are a beginner, intermediate, or advanced learner.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 232.4411811023621794 Td
+(• Doubt Clarification: The software allows the learner to type or select the doubt they want clarified, and the AI) Tj
+T* (mentor responds with a step-by-step, example-based explanation aligned with the reference textbook for that) Tj
+T* (skill.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 189.9214960629919915 Td
+(• Assignment Generation: The proficiency level and topic for which the learner wants an assignment is then) Tj
+T* (specified by the learner, and the system generates practice questions that progress from easy to advanced.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 148.8191338582676053 Td
+(• Learning Aid Generation: Learning aid generation shall be done on request. After selecting the topic and the) Tj
+T* (type of aid required, the learner receives a mind map, mnemonic, or short summary that is generated and) Tj
+T* (displayed within the session.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 106.2994488188975311 Td
+(• Multi-Skill Linking: Multi-skill linking shall be facilitated between any two or more skills added to the learner’s) Tj
+T* (profile, for example linking a programming skill and a mathematics skill for interdisciplinary assignments.) Tj
+ET
+endstream
+endobj
+9 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 10 0 R
+>>
+endobj
+10 0 obj
+<<
+/Length 5083
+>>
+stream
+1.4173228346456694 w
+0. G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 771.0238582677164914 Td
+(• Progress Enquiry: Progress enquiry for any skill linked to the learner’s profile shall be facilitated.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 754.0159842519684616 Td
+(• Reporting: Every completed assignment or activity shall be recorded in the learner’s history and reflected on) Tj
+T* (their dashboard. The reporting module enables the learner to choose whether they want a detailed activity) Tj
+T* (summary or just an update to their overall skill progress.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 711.4962992125983874 Td
+(• Session Cancelling: The learner shall abort an ongoing assignment or activity with the press of an Exit) Tj
+T* (option. For example, on starting an assignment by mistake. In addition, the learner can also cancel the entire) Tj
+T* (session by logging out and can start a fresh session all over again.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 657.6380314960629221 Td
+(10. User Characteristics) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 632.1262204724408775 Td
+(There are different kinds of users that will be interacting with the system. The intended users of the software) Tj
+T* (are as follows: -) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 602.3624409448818824 Td
+(• User A: A beginner learner. This user has little or no prior exposure to the selected skill and is not a frequent) Tj
+T* (user of AI-based learning tools. User A will find the product easy to use due to simple, guided explanations) Tj
+T* (and beginner-level assignments for each skill.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 559.8427559055116944 Td
+(• User B: An experienced learner. This user has used the platform on several occasions before and manages) Tj
+T* (most of their skill development independently through Skill Mentor. There is only a brief onboarding session) Tj
+T* (at the beginning, thus making subsequent sessions faster.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 517.3230708661417339 Td
+(• Platform Administrator: A system maintainer. This user is familiar with the functioning of the platform. This) Tj
+T* (user is in charge of updating the reference material and reference textbooks used by the AI mentors and) Tj
+T* (resolving technical issues in case of malfunction. This user is presented with a different dashboard when they) Tj
+T* (log in with the administrator’s password and is provided with options different from those of a normal learner.) Tj
+T* (They have the authority to add, update, or restrict skills and content available on the platform.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 437.952992125984224 Td
+(11. Constraints) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 401.1025984251967884 Td
+(The major constraints that the project has are as follows: -) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 384.0947244094487587 Td
+(• The platform must support only one active learning session per learner account at a time.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 367.086850393700729 Td
+(• The number of invalid login attempts must not exceed five. After five unsuccessful attempts, the account is) Tj
+T* (temporarily locked and needs to be unlocked through email verification.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 337.323070866141677 Td
+(• The minimum number of questions generated per assignment request is 5, and the maximum number of) Tj
+T* (questions generated in a single request is 20, with a maximum of 100 questions that a learner can attempt) Tj
+T* (across all skills in a single day.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 294.8033858267715459 Td
+(• Before a new assignment is generated, a check is performed to confirm that the learner has completed at) Tj
+T* (least 70% of the previous assignment for that skill, failing which the new assignment request is denied.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 265.0396062992125508 Td
+(• The minimum length of a doubt query submitted by the learner is 5 characters, and the maximum length is) Tj
+T* (500 characters. A learner can link only those external practice platforms that are supported by the system,) Tj
+T* (such as LeetCode, HackerRank, and GeeksforGeeks.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 188.5041732283464171 Td
+(12. Assumptions and Dependencies) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 151.6537795275589815 Td
+(The requirements stated in the SRS could be affected by the following factors:) Tj
+ET
+endstream
+endobj
+11 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 12 0 R
+>>
+endobj
+12 0 obj
+<<
+/Length 5159
+>>
+stream
+1.4173228346456694 w
+0. G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 771.0238582677164914 Td
+(• One major dependency that the project might face is the changes that need to be incorporated as academic) Tj
+T* (curricula and reference textbooks are revised. As the source material changes, the AI mentor’s knowledge) Tj
+T* (base needs to be updated with the same immediately. A delay in doing so may result in explanations that no) Tj
+T* (longer match the prescribed material. So, the reference content should be refreshed as and when required by) Tj
+T* (the content team.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 702.9923622047243725 Td
+(• Another constraint relating to the operating environment is that we are specific to a cloud-hosted) Tj
+T* (PostgreSQL database.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 673.2285826771653774 Td
+(• The project could be largely affected if a learner’s progress is updated from one device at the same time the) Tj
+T* (learner is active on another device. Such a condition shall be taken care of through real-time data) Tj
+T* (synchronization.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 630.7088976377951894 Td
+(• At this stage no quantitative measures are imposed on the software in terms of speed and memory although) Tj
+T* (it is implied that all functions will be optimized with respect to speed and memory.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 589.6065354330708033 Td
+(It is furthermore assumed that the scope of the platform will increase considerably in the future.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 549.9214960629921052 Td
+(13. System Features) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 513.0711023622046696 Td
+(3.1Functional requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 496.0632283464566399 Td
+(Personalized Skill Learning and Mentoring) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 467.716771653543276 Td
+(At the start, the learner is provided with a login screen and is required to enter their registered email and) Tj
+T* (password, which will be verified by the system. In case of an unsuccessful attempt, the learner is asked again) Tj
+T* (for their credentials, but the maximum number of attempts given to the learner is limited to 5 only, failing) Tj
+T* (which the account is temporarily locked and needs to be unlocked through email verification.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 412.4411811023621226 Td
+(After logging in, the learner is presented with a list of skills added to their profile. The learner can select any) Tj
+T* (one skill for interaction with its dedicated AI mentor for that session. 1.There is also a facility for the learner to) Tj
+T* (switch to any other skill during that session.6) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 369.9214960629920483 Td
+(After skill selection, the learner is directed towards a skill dashboard that displays a set of options,1. such as) Tj
+T* (Ask a Doubt,3. Get an Assignment, and 5.Generate Learning Aid, along with a brief description of each,) Tj
+T* (enabling the learner to understand their functioning. The learner can select any of the listed options and can) Tj
+T* (continue with the learning activity.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 314.6459055118109518 Td
+(At any moment if the learner wants to abort the current activity, they are provided with an Exit option. Just by) Tj
+T* (selecting the exit option,9 the learner can cancel the changes made so far in that activity and can begin a) Tj
+T* (new one. After the learner is finished with their session, they are required to log out of the platform.9) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 260.7876377952754865 Td
+(Validity Checks) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 235.2758267716534419 Td
+(In order to gain access to the system, the learner is required to enter their correct registered email and) Tj
+T* (password, failing which their account may be temporarily locked. The learner can access only one account at) Tj
+T* (a time. Also, if the learner is an administrator, they are required to enter their administrator credentials in) Tj
+T* (order to access and change the content and settings provided by the system.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 157.3230708661416202 Td
+(Sequencing Information) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 131.8112598425195756 Td
+(The information about the learner and their skill profile should be entered into the database prior to any) Tj
+T* (learning activity, 7.and a backup should be maintained for all learner progress information.) Tj
+ET
+endstream
+endobj
+13 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 14 0 R
+>>
+endobj
+14 0 obj
+<<
+/Length 5991
+>>
+stream
+1.4173228346456694 w
+0. G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 771.0238582677164914 Td
+(Error Handling/ Response to Abnormal Situations) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 754.0159842519684616 Td
+(If any of the above validation/sequencing flow does not hold true, appropriate error messages will be) Tj
+T* (prompted to the learner for taking the needful corrective action.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 701.5750393700786844 Td
+(4. External Interface Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 664.7246456692912489 Td
+(1. User Interface Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 647.7167716535432191 Td
+(1. A login screen is provided in the beginning for entering the required registered email and password.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 630.7088976377951894 Td
+(2. An unsuccessful login leads to a reattempt \(maximum five\) screen for again entering the same information.) Tj
+T* (A successful login leads to a screen displaying the list of skills added to the learner’s profile from which the) Tj
+T* (learner can select any one.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 588.1892125984251152 Td
+(3. In case of an administrator, a screen will be shown having options to add a new skill, update reference) Tj
+T* (content, manage learner accounts, and disable any service.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 558.42543307086612 Td
+(4. In case of content update or system maintenance, a screen is displayed to confirm the administrator’s) Tj
+T* (intent to proceed and also allow the administrator to take a backup of the data if needed.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 528.6616535433070112 Td
+(5. After skill selection, a screen with a number of options is then shown to the learner. It contains all the) Tj
+T* (options, such as doubt clarification, assignments, and learning aids, along with their brief description to) Tj
+T* (enable the learner to understand their functioning and select the proper option.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 486.1419685039369369 Td
+(6. A screen will be provided for the learner to check their overall skill progress.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 469.1340944881889072 Td
+(7. A screen will be provided that displays the list of friends the learner is connected with and their shared) Tj
+T* (learning progress.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 439.3703149606298552 Td
+(8. A screen will be provided for the learner to link two or more skills and view combined, interdisciplinary) Tj
+T* (assignment recommendations.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 398.2679527559054691 Td
+(Other various user interface requirements that need to be fulfilled are as follows:-) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 369.9214960629920483 Td
+(The display shall be responsive and shall render correctly on screen resolutions of 1366 x 768 and above, as) Tj
+T* (well as on mobile screens of 360 pixels width and above. The display shall support a light and dark colour) Tj
+T* (theme. The interface shall also support touch-screen interaction on tablets and mobile browsers. The) Tj
+T* (dashboard shall use accessible font sizes and colour contrast suitable for extended reading sessions.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 303.3073228346455608 Td
+(2. Hardware Interface Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 286.2994488188975311 Td
+(• The client device shall have a minimum screen size of 5 inches to properly access the responsive interface.) Tj
+T* (The device shall support a modern web browser released within the last three years. A stable internet) Tj
+T* (connection with a minimum bandwidth of 1 Mbps is recommended for uninterrupted use of the AI mentor and) Tj
+T* (doubt-clarification features.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 231.0238582677164914 Td
+(%æ   A   s t a n d a r d   k e y b o a r d ,   m o u s e ,   o r   t o u c h - s c r e e n   i n p u t   d e v i c e   i s   r e q u i r e d   f o r   i n t e r a c t i n g   w i t h   t h e   p l a t f o r m .) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 214.0159842519684616 Td
+(%æ   A   w o r k i n g   m i c r o p h o n e   i s   o p t i o n a l   a n d   r e q u i r e d   o n l y   f o r   l e a r n e r s   w h o   c h o o s e   t o   s u b m i t   d o u b t s   u s i n g   v o i c e) Tj
+T* (input.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 184.2522047244093528 Td
+(%æ   T h e r e   s h a l l   b e   s u f f i c i e n t   l o c a l   s t o r a g e   a v a i l a b l e   o n   t h e   c l i e n t   d e v i c e   f o r   t e m p o r a r y   c a c h i n g   o f   d o w n l o a d e d) Tj
+T* (notes and mind maps.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 154.4884251968503577 Td
+(%æ   T h e   s e r v e r   i n f r a s t r u c t u r e   s h a l l   p r o v i d e   a   m i n i m u m   o f   1 6 G B   o f   R A M   a n d   s h a l l   s u p p o r t   h o r i z o n t a l   s c a l i n g   t o) Tj
+T* (accommodate an increasing number of concurrent learners. Screen resolution of at least 1024 x 768 is) Tj
+T* (required on the administrator console for proper and complete viewing of management screens.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 100.6301574803148924 Td
+(3. Software Interface Requirements) Tj
+ET
+endstream
+endobj
+15 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 16 0 R
+>>
+endobj
+16 0 obj
+<<
+/Length 4811
+>>
+stream
+1.4173228346456694 w
+0. G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 771.0238582677164914 Td
+(In order to perform various different functions, this software needs to interact with various other softwares. So) Tj
+T* (there are certain software interface requirements that need to be fulfilled which are listed as follows:-) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 741.2600787401574962 Td
+(The backend service used to manage learner data, skill tracking, and assignment logic shall be a) Tj
+T* (Node.js-based REST API. The AI mentor engine used to generate explanations, assignments, and learning) Tj
+T* (aids shall be built on a large language model accessed through a secured API. The database used to keep) Tj
+T* (records of learner accounts and progress shall be PostgreSQL version 14 or higher. The frontend interface) Tj
+T* (shall be built using a modern JavaScript framework such as React.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 661.8899999999999864 Td
+(4. Communication Interface Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 633.5435433070865656 Td
+(The machine needs to communicate with the main branch for each session for various functions such as) Tj
+T* (login verification, account access etc. so the following are the various communication interface requirements) Tj
+T* (that are needed to be fulfilled in order to run the software successfully: -) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 591.0238582677164914 Td
+(The system will employ HTTPS for all client-server communication to ensure secure data transfer. The) Tj
+T* (communication protocol used shall be TCP/IP. The AI mentor and doubt-clarification features shall use a) Tj
+T* (REST API for standard requests and a WebSocket connection for real-time chat-style interactions.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+68.031496062992133 514.4884251968503577 Td
+(1. Other Non-functional Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 477.6380314960629221 Td
+(1. Performance Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 460.6301574803148924 Td
+(The following list provides a brief summary of the performance requirements for the software:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 432.2837007874015285 Td
+(2. Capacity) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 415.2758267716534988 Td
+(The platform shall provide learners with 24-hour access to skill content, assignments, and the AI mentor.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 386.929370078740078 Td
+(3. Dynamic requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 358.5829133858267141 Td
+(The AI mentor’s response time for a doubt-clarification query must not exceed 3 sec. under normal server) Tj
+T* (workload and 5 sec. under peak server workload. The assignment generation time must not exceed 4 sec.) Tj
+T* (under normal server workload and 6 sec. under peak server workload. Learning-aid generation time \(mind) Tj
+T* (maps, mnemonics, summaries\) must not exceed 5 sec. under normal server workload and 8 sec. under peak) Tj
+T* (server workload. Dashboard and progress-analytics load time must not exceed 3 sec. under normal server) Tj
+T* (workload and 5 sec. under peak server workload. Login and skill-selection screen transitions must not exceed) Tj
+T* (2 sec. under normal server and peak server workload.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 253.7010236220471597 Td
+(4. Quality –) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 236.69314960629913 Td
+(The primary objective is to produce quality software. As the quality of a piece of software is difficult to) Tj
+T* (measure quantitatively, the following guidelines will be used when judging the quality of the software:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 195.5907874015747439 Td
+(1. Consistency – All code will be consistent with respect to the style. \(This is implied when adhering to the) Tj
+T* (standard\).) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 165.827007874015635 Td
+(2. Test cases – All functionality will be thoroughly tested) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 126.1419685039369369 Td
+(5. Software System Attributes) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 97.7955118110235162 Td
+(1. Reliability) Tj
+ET
+endstream
+endobj
+17 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 18 0 R
+>>
+endobj
+18 0 obj
+<<
+/Length 5704
+>>
+stream
+1.4173228346456694 w
+0. G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 771.0238582677164914 Td
+(• The AI mentor’s explanations shall be generated from verified textbooks and reference material to ensure) Tj
+T* (accuracy and reduce the chances of incorrect or misleading responses. The learner progress data shall be) Tj
+T* (stored using a reliable, replicated database system.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 717.1655905511811397 Td
+(2. Availability) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 700.15771653543311 Td
+(The platform shall have a backup data store in case of primary database failure. Any abnormal operation) Tj
+T* (shall result in a graceful error message rather than a silent failure.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 670.3939370078740012 Td
+(After an abnormal shutdown of the AI mentor service, the system shall automatically attempt to restart the) Tj
+T* (affected service, with manual intervention available for the maintenance team if needed.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 640.6301574803148924 Td
+(There should be no loss of learner progress data during whose update the system is abnormally interrupted.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 600.9451181102361943 Td
+(3. Security) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 583.9372440944881646 Td
+(The system shall be compatible with standard web-application security practices. The system shall have two) Tj
+T* (levels of security, i.e., account login and session-token verification, both authenticated by the backend) Tj
+T* (service. The encryption standard used during data transmission shall be TLS 1.2 or higher.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 541.4175590551180903 Td
+(The password shall be 8-20 characters long. Passwords shall not contain the learner’s name, as such) Tj
+T* (passwords are easy to guess. Passwords can contain digits, hyphens, and underscores.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 511.6537795275589815 Td
+(The learner should be provided with only five attempts for login, failing which the account needs to be) Tj
+T* (temporarily locked and unlocked through email verification.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 481.8899999999999295 Td
+(There shall be activity logging for all administrator actions. There shall be a secured, access-controlled) Tj
+T* (database for storing learner data. The learner data shall be handled in compliance with standard data-privacy) Tj
+T* (practices.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 416.69314960629913 Td
+(4. Maintainability) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 399.6852755905511003 Td
+(The system components, i.e., the AI mentor engine, database, and API services, shall be easily serviceable) Tj
+T* (without requiring downtime for the entire platform.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 369.9214960629920483 Td
+(The system should have the mechanism of self-monitoring periodically in order to detect any fault in the AI) Tj
+T* (mentor engine or database connectivity.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 340.1577165354329964 Td
+(The system should inform the maintenance team automatically as soon as it detects any error. The kind of) Tj
+T* (fault and the problem being encountered should also be reported by the system automatically.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 310.3939370078740012 Td
+(6. Other Non-functional Requirements) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 284.882125984251843 Td
+(6.1 Safety Requirements) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+56.6929133858267775 259.3703149606297984 Td
+(The following safety requirements shall be fulfilled by the Skill Mentor platform:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 242.3624409448817687 Td
+(• The system shall automatically save learner progress at regular intervals to prevent data loss during) Tj
+T* (unexpected failures.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 212.5986614173227736 Td
+(• The learner shall receive a confirmation message before exiting an ongoing assignment or deleting any) Tj
+T* (saved information.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 182.8348818897636647 Td
+(• The system shall recover previously saved learner data after an abnormal shutdown.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 165.827007874015635 Td
+(• Periodic backups of learner records, assignments, and progress data shall be maintained.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 148.8191338582676053 Td
+(• Only authorized administrators shall be allowed to modify reference content or system configurations.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 131.8112598425195756 Td
+(• The platform shall generate appropriate warning messages whenever critical operations are performed.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 114.8033858267715459 Td
+(• In case of network interruption, the learner shall be able to continue from the last successfully saved state) Tj
+T* (after reconnection.) Tj
+ET
+endstream
+endobj
+19 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 20 0 R
+>>
+endobj
+20 0 obj
+<<
+/Length 5660
+>>
+stream
+1.4173228346456694 w
+0. G
+1.4173228346456694 w
+0. G
+28.3464566929133888 813.5435433070865656 538.5870866141731312 -785.1970866141731449 re
+S
+32.5984251968503997 809.291574803149615 530.0831496062991164 -776.69314960629913 re
+S
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 771.0238582677164914 Td
+(Software Quality Attributes) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 745.5120472440944468 Td
+(Usability) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 720.0002362204724022 Td
+(• The platform shall provide an intuitive and user-friendly interface.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 702.9923622047243725 Td
+(• The navigation shall remain consistent throughout the application.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 685.9844881889763428 Td
+(• First-time users shall be able to use the platform with minimal guidance.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 668.9766141732283131 Td
+(• The system shall support both light mode and dark mode.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 651.9687401574802834 Td
+(• The interface shall be accessible on desktop, tablet, and mobile devices.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 634.9608661417322537 Td
+(Scalability) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 609.4490551181102092 Td
+(• The system shall support an increasing number of learners without significant degradation in performance.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 592.4411811023621794 Td
+(• Additional skills and AI mentor modules shall be integrated without modifying the existing architecture.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 575.4333070866141497 Td
+(• The backend shall support horizontal scaling for handling concurrent users.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 558.42543307086612 Td
+(Portability) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 532.9136220472440755 Td
+(• The application shall operate on Windows, Linux, and macOS through modern web browsers.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 515.9057480314959321 Td
+(• The platform shall support Android and iOS mobile browsers.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 498.8978740157479592 Td
+(• The software shall remain independent of platform-specific hardware.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 481.8899999999999295 Td
+(Interoperability) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 456.378188976377885 Td
+(• The system shall support integration with external learning platforms such as LeetCode, HackerRank, and) Tj
+T* (GeeksforGeeks.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 426.614409448818833 Td
+(• The platform shall communicate with third-party services through secure REST APIs.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 409.6065354330708033 Td
+(• Data exchange shall use standard JSON format.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 392.5986614173227736 Td
+(Business Rule) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 367.086850393700729 Td
+(The Skill Mentor platform shall comply with the following business) Tj
+T* (rules:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 324.5671653543306547 Td
+(• Every learner shall register using a unique email address.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 307.559291338582625 Td
+(• Only registered learners shall access learning services.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 290.5514173228345953 Td
+(• Only one active session shall be allowed for each learner account.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 273.5435433070865656 Td
+(• Assignment difficulty shall be determined according to the learner's selected proficiency level.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 256.5356692913385359 Td
+(• A learner shall complete at least 70% of the previous assignment before requesting a new assignment for) Tj
+T* (the same skill.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 226.7718897637794271 Td
+(• Only administrators shall be authorized to add, modify, or remove learning content.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 209.7640157480313974 Td
+(• All learner activities shall be automatically recorded in the progress history.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 192.7561417322833677 Td
+(• Every administrator action shall be logged for auditing purposes.) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 175.748267716535338 Td
+(Other Requirements) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 150.2364566929132934 Td
+(The following additional requirements shall also be satisfied:) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 124.7246456692912489 Td
+(• The platform shall provide email notifications for account verification, password reset, and important) Tj
+T* (announcements.) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.118 0.161 0.231 rg
+68.031496062992133 94.96086614173214 Td
+(• Learners shall be able to export their progress reports in PDF format.) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R ]
+/Count 9
+>>
+endobj
+21 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+22 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+23 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+24 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+25 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+26 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+27 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+28 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+29 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+30 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+31 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+32 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+33 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+34 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 21 0 R
+/F2 22 0 R
+/F3 23 0 R
+/F4 24 0 R
+/F5 25 0 R
+/F6 26 0 R
+/F7 27 0 R
+/F8 28 0 R
+/F9 29 0 R
+/F10 30 0 R
+/F11 31 0 R
+/F12 32 0 R
+/F13 33 0 R
+/F14 34 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+35 0 obj
+<<
+/Producer (jsPDF 4.2.1)
+/CreationDate (D:20260812161146+05'30')
+>>
+endobj
+36 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 37
+0000000000 65535 f 
+0000048580 00000 n 
+0000050455 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000004851 00000 n 
+0000004988 00000 n 
+0000009889 00000 n 
+0000010026 00000 n 
+0000015021 00000 n 
+0000015159 00000 n 
+0000020295 00000 n 
+0000020434 00000 n 
+0000025646 00000 n 
+0000025785 00000 n 
+0000031829 00000 n 
+0000031968 00000 n 
+0000036832 00000 n 
+0000036971 00000 n 
+0000042728 00000 n 
+0000042867 00000 n 
+0000048690 00000 n 
+0000048816 00000 n 
+0000048947 00000 n 
+0000049081 00000 n 
+0000049219 00000 n 
+0000049343 00000 n 
+0000049472 00000 n 
+0000049604 00000 n 
+0000049740 00000 n 
+0000049868 00000 n 
+0000049995 00000 n 
+0000050124 00000 n 
+0000050257 00000 n 
+0000050359 00000 n 
+0000050708 00000 n 
+0000050794 00000 n 
+trailer
+<<
+/Size 37
+/Root 36 0 R
+/Info 35 0 R
+/ID [ <9ED3BCA5D806F7E19AEF4EE3DF2D73A9> <9ED3BCA5D806F7E19AEF4EE3DF2D73A9> ]
+>>
+startxref
+50898
+%%EOF
