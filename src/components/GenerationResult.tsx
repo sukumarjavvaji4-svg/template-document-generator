@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
-import { renderAsync } from 'docx-preview';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
-import JSZip from 'jszip';
+
 import {
   Download, CheckCircle2, AlertTriangle, XCircle, Info,
   FileText, Files, Clock, ChevronDown, ChevronRight,
@@ -67,126 +64,39 @@ export function GenerationResult({
     saveAs(blob, fileName);
   };
 
-  const convertDocxToPdfClientSide = async (docxBlob: Blob, docxFileName: string): Promise<boolean> => {
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.style.top = '-9999px';
-    container.style.width = '800px';
-    container.style.background = '#ffffff';
-    document.body.appendChild(container);
-
-    try {
-      await renderAsync(docxBlob, container, undefined, {
-        className: 'docx-preview-content',
-        inWrapper: true,
-        ignoreWidth: false,
-        ignoreHeight: false,
-        ignoreFonts: false,
-        breakPages: true,
-        ignoreLastRenderedPageBreak: true,
-        experimental: false,
-        trimXmlDeclaration: true,
-        useBase64URL: true,
-        renderHeaders: true,
-        renderFooters: true,
-        renderFootnotes: true,
-        renderEndnotes: true,
-      });
-
-      await new Promise(resolve => setTimeout(resolve, 400));
-
-      let pageElements = Array.from(
-        container.querySelectorAll('.docx-preview-content section, .docx-wrapper > section, section.docx')
-      ) as HTMLElement[];
-
-      if (pageElements.length === 0) {
-        pageElements = Array.from(container.querySelectorAll('.docx-wrapper, .docx-preview-content')) as HTMLElement[];
-      }
-
-      if (pageElements.length === 0) {
-        pageElements = [container];
-      }
-
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'pt',
-        format: 'a4',
-      });
-
-      for (let i = 0; i < pageElements.length; i++) {
-        const pageEl = pageElements[i];
-
-        const canvas = await html2canvas(pageEl, {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          backgroundColor: '#ffffff',
-        });
-
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-
-        if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-      }
-
-      const pdfBlob = pdf.output('blob');
-      const pdfName = docxFileName.replace(/\.docx$/i, '') + '.pdf';
-      saveAs(pdfBlob, pdfName);
-      return true;
-    } catch (err) {
-      console.error('Client-side PDF generation failed:', err);
-      return false;
-    } finally {
-      if (document.body.contains(container)) {
-        document.body.removeChild(container);
-      }
-    }
-  };
-
   const handleDownloadPdf = async () => {
     setPdfError(null);
     try {
       setIsConvertingPdf(true);
 
-      // Strategy 1: Try server PDF conversion endpoint first
-      let serverConverted = false;
-      try {
-        const response = await fetch('/api/convert-pdf', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/octet-stream',
-          },
-          body: blob,
-        });
+      // Pass Final.docx directly to native LibreOffice rendering engine API endpoint
+      const response = await fetch('/api/convert-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        body: blob,
+      });
 
-        if (response.ok) {
-          const pdfBlob = await response.blob();
-          const pdfArrayBuffer = await pdfBlob.arrayBuffer();
-          const pdfUint8 = new Uint8Array(pdfArrayBuffer);
-          const pdfHeader = String.fromCharCode(...pdfUint8.subarray(0, 5));
-
-          if (pdfUint8.byteLength > 0 && pdfHeader === '%PDF-') {
-            const pdfName = fileName.replace(/\.docx$/i, '') + '.pdf';
-            saveAs(pdfBlob, pdfName);
-            serverConverted = true;
-          }
-        }
-      } catch {
-        // Server endpoint not available (e.g. static host, Vercel, offline) -> fallback to browser rendering
+      if (!response.ok) {
+        throw new Error(`Server returned HTTP ${response.status}`);
       }
 
-      if (serverConverted) return;
+      const pdfBlob = await response.blob();
+      const pdfArrayBuffer = await pdfBlob.arrayBuffer();
+      const pdfUint8 = new Uint8Array(pdfArrayBuffer);
+      const pdfHeader = String.fromCharCode(...pdfUint8.subarray(0, 5));
 
-      // Strategy 2: Client-Side Web Browser Rendering Engine (100% browser compatible)
-      const clientConverted = await convertDocxToPdfClientSide(blob, fileName);
-      if (!clientConverted) {
+      // PDF Validation Check
+      if (pdfUint8.byteLength === 0 || pdfHeader !== '%PDF-') {
         setPdfError('PDF conversion failed. Your Word document was generated successfully, but PDF conversion is currently unavailable.');
+        return;
       }
+
+      const pdfName = fileName.replace(/\.docx$/i, '') + '.pdf';
+      saveAs(pdfBlob, pdfName);
     } catch (err) {
-      console.error('PDF conversion error:', err);
+      console.error('PDF conversion failed:', err);
       setPdfError('PDF conversion failed. Your Word document was generated successfully, but PDF conversion is currently unavailable.');
     } finally {
       setIsConvertingPdf(false);

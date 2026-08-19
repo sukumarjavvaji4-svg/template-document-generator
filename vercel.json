@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/convert-pdf",
+      "destination": "https://<YOUR-PDF-SERVICE-URL>/api/convert-pdf"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
