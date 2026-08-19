@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/convert-pdf",
-      "destination": "https://<YOUR-PDF-SERVICE-URL>/api/convert-pdf"
+      "destination": "https://template-document-generator.onrender.com/api/convert-pdf"
     },
     {
       "source": "/(.*)",
