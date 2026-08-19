@@ -1,4 +1,4 @@
-FROM node:20-bullseye-slim
+FROM node:20-bookworm-slim
 
 # Install LibreOffice and required font packages
 RUN apt-get update && apt-get install -y \
@@ -16,7 +16,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --production
 
-COPY . .
+COPY server.js ./
 
 EXPOSE 3000
 
