@@ -1,9 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react';
 import {
-  Files,
-  Upload,
   FileText,
-  X,
+  FolderOpen,
+  CheckCircle2,
+  RefreshCw,
+  Trash2,
   FileWarning,
 } from 'lucide-react';
 import { UploadedFile } from '../types';
@@ -19,65 +20,7 @@ interface DataDocumentsCardProps {
   hasError?: boolean;
 }
 
-interface FileItemProps {
-  file: UploadedFile;
-  onRemove: (id: string) => void;
-  index: number;
-}
 
-function FileItem({ file, onRemove, index }: FileItemProps) {
-  const [removing, setRemoving] = useState(false);
-
-  const handleRemove = () => {
-    setRemoving(true);
-    setTimeout(() => onRemove(file.id), 260);
-  };
-
-  return (
-    <div
-      className={`
-        flex items-center gap-3 px-4 py-3 rounded-xl border
-        transition-all duration-300
-        ${removing
-          ? 'opacity-0 scale-95 -translate-x-2'
-          : 'opacity-100 scale-100 translate-x-0 border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-white dark:hover:bg-slate-900 hover:shadow-sm'
-        }
-      `}
-      style={{ animationDelay: `${index * 40}ms` }}
-    >
-      {/* File type icon */}
-      <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900 flex items-center justify-center shrink-0">
-        <FileText size={17} className="text-blue-600 dark:text-blue-400" strokeWidth={1.7} />
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <p
-          className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate leading-snug"
-          title={file.name}
-        >
-          {file.name}
-        </p>
-        <p className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">{formatFileSize(file.size)}</p>
-      </div>
-
-      {/* Status badge */}
-      <span className="hidden sm:flex shrink-0 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold items-center justify-center">
-        Data doc ready
-      </span>
-
-      {/* Remove button */}
-      <button
-        onClick={handleRemove}
-        title={`Remove ${file.name}`}
-        aria-label={`Remove ${file.name}`}
-        className="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/60 transition-all duration-200 ml-1"
-      >
-        <X size={15} strokeWidth={2} />
-      </button>
-    </div>
-  );
-}
 
 export function DataDocumentsCard({
   dataFiles,
@@ -91,17 +34,10 @@ export function DataDocumentsCard({
   const fileCount = dataFiles.length;
   const isFull = fileCount >= MAX_FILES;
 
+  const currentFile = dataFiles[0] || null;
+
   const processFiles = useCallback(
     (incomingFiles: File[]) => {
-      if (dataFiles.length >= MAX_FILES) {
-        addToast(
-          'warning',
-          'Only 1 data document allowed',
-          'Remove or replace the current document to select another.'
-        );
-        return;
-      }
-
       const validFiles: UploadedFile[] = [];
       const invalidFiles: string[] = [];
 
@@ -128,24 +64,20 @@ export function DataDocumentsCard({
       }
 
       if (validFiles.length > 0) {
-        onFilesChange([validFiles[0]]); // Strictly 1 file maximum
+        onFilesChange([validFiles[0]]);
       }
     },
-    [addToast, dataFiles.length, onFilesChange]
+    [addToast, onFilesChange]
   );
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragOver(false);
-      if (isFull) {
-        addToast('warning', 'File limit reached', 'Maximum 1 data document allowed.');
-        return;
-      }
       const files = Array.from(e.dataTransfer.files);
       processFiles(files);
     },
-    [addToast, isFull, processFiles]
+    [processFiles]
   );
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -165,148 +97,185 @@ export function DataDocumentsCard({
     e.target.value = '';
   };
 
-  const handleRemoveFile = (id: string) => {
-    onFilesChange(dataFiles.filter((f) => f.id !== id));
+  const handleRemoveFile = () => {
+    onFilesChange([]);
   };
 
   return (
-    <div
-      className={`
-        bg-white dark:bg-slate-800 rounded-2xl border transition-all duration-300
-        ${hasError && fileCount === 0
-          ? 'border-red-300 dark:border-red-800 shadow-sm shadow-red-100 dark:shadow-red-950/30 animate-shake'
-          : 'border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600'
-        }
-      `}
-    >
-      {/* Card Header */}
-      <div className="px-6 pt-6 pb-4 border-b border-slate-100 dark:border-slate-700/60">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center shrink-0">
-            <Files size={20} className="text-indigo-600 dark:text-indigo-400" strokeWidth={1.8} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100 leading-tight">
-              Upload your data document (.docx)
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              1 file maximum
-            </p>
-          </div>
-          {/* File counter badge */}
-          <div className="shrink-0">
-            <div
-              className={`
-                flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300
-                ${isFull
-                  ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'
-                }
-              `}
-            >
-              <span>{fileCount}</span>
-              <span className="opacity-50">/</span>
-              <span>1</span>
-              <span className="ml-0.5 hidden sm:inline font-normal opacity-70">file</span>
-            </div>
-          </div>
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-4 sm:p-5 transition-all duration-300">
+      {/* Section Header */}
+      <div className="mb-3.5 flex items-center justify-between">
+        <div>
+          <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+            Upload Your Word Document
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Drag and drop your .docx file here or browse from your computer.
+          </p>
         </div>
+        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+          Step 2 of 2
+        </span>
       </div>
 
-      {/* Card Body */}
-      <div className="p-6 space-y-4">
-        {/* Drop Zone */}
-        {!isFull && (
+      {/* Upload Area / Uploaded State */}
+      {!isFull ? (
+        /* Empty / Dropzone State */
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label="Upload Word document drop zone"
+          onClick={() => inputRef.current?.click()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              inputRef.current?.click();
+            }
+          }}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          className={`
+            group relative cursor-pointer rounded-xl border-2 border-dashed p-5 sm:p-6
+            flex flex-col items-center justify-center text-center select-none
+            transition-all duration-200 hover:-translate-y-0.5
+            ${isDragOver
+              ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 ring-4 ring-blue-500/10 scale-[1.01]'
+              : hasError && fileCount === 0
+                ? 'border-red-300 dark:border-red-800/80 bg-red-50/30 dark:bg-red-950/20 hover:border-red-400'
+                : 'border-slate-300/80 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-900/50 hover:border-blue-500/80 dark:hover:border-blue-400/80 hover:bg-blue-50/20 dark:hover:bg-blue-950/20'
+            }
+          `}
+        >
+          {/* Word Icon Container */}
           <div
-            role="button"
-            tabIndex={0}
-            aria-label="Upload data documents drop zone"
-            onClick={() => !isFull && inputRef.current?.click()}
-            onKeyDown={(e) => e.key === 'Enter' && !isFull && inputRef.current?.click()}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
             className={`
-              relative cursor-pointer rounded-xl border-2 border-dashed p-6
-              flex flex-col items-center justify-center gap-2.5 text-center
-              transition-all duration-200 select-none
+              w-11 h-11 rounded-xl flex items-center justify-center mb-2.5 transition-all duration-200
               ${isDragOver
-                ? 'border-indigo-400 bg-indigo-50/60 dark:bg-indigo-950/40 scale-[1.01]'
-                : hasError && fileCount === 0
-                  ? 'border-red-300 dark:border-red-800 bg-red-50/30 dark:bg-red-950/20 hover:border-red-400 hover:bg-red-50/50'
-                  : 'border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-indigo-50/20 dark:hover:bg-indigo-950/20'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30 scale-105'
+                : 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/60 shadow-2xs group-hover:scale-105 group-hover:bg-blue-600 group-hover:text-white'
               }
             `}
           >
-            <div
-              className={`
-                w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200
-                ${isDragOver ? 'bg-indigo-100 dark:bg-indigo-900/60 scale-110' : 'bg-slate-100 dark:bg-slate-700/60'}
-              `}
-            >
-              <Upload
-                size={22}
-                className={`transition-colors duration-200 ${isDragOver ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-400'}`}
-                strokeWidth={1.8}
-              />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-                {isDragOver ? 'Release to upload' : 'Drag & Drop your data document'}
-              </p>
-              <p className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">
-                or{' '}
-                <span className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">Browse</span>
-                {' '}— 1 file maximum, .docx only
-              </p>
-            </div>
-
-            {hasError && fileCount === 0 && (
-              <div className="flex items-center gap-1.5 text-red-500 dark:text-red-400 animate-fade-in">
-                <FileWarning size={14} />
-                <span className="text-xs font-medium">Please upload a data document</span>
-              </div>
-            )}
+            <FileText size={22} strokeWidth={1.8} />
           </div>
-        )}
 
-        {/* Files List */}
-        {dataFiles.length > 0 && (
-          <div className="space-y-2 animate-fade-in">
-            <div className="space-y-2">
-              {dataFiles.map((file, index) => (
-                <FileItem
-                  key={file.id}
-                  file={file}
-                  onRemove={handleRemoveFile}
-                  index={index}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          {/* Prompt */}
+          <h3 className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-0.5">
+            {isDragOver ? 'Drop your Word document here' : 'Drag and drop your .docx file here'}
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+            or browse from your computer
+          </p>
 
-        {/* Have multiple data documents? Merge link */}
-        <div className="pt-1 flex items-center justify-center sm:justify-start gap-1 text-xs text-slate-500 dark:text-slate-400">
-          <span>Have multiple data documents?</span>
+          {/* Distinct Browse Files button */}
           <button
             type="button"
-            onClick={onOpenMergeModal}
-            className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline cursor-pointer ml-1"
+            onClick={(e) => {
+              e.stopPropagation();
+              inputRef.current?.click();
+            }}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-semibold shadow-2xs hover:shadow-sm hover:shadow-blue-500/20 transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
           >
-            Merge Data Documents
+            <FolderOpen size={15} strokeWidth={2} />
+            <span>Browse Files</span>
           </button>
-        </div>
 
-        <input
-          ref={inputRef}
-          type="file"
-          accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          onChange={handleInputChange}
-          className="hidden"
-          aria-hidden="true"
-          id="data-files-input"
-        />
+          {/* Format note */}
+          <div className="mt-2.5 flex items-center gap-2">
+            <span className="text-[10px] font-medium tracking-wide uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
+              .docx files only
+            </span>
+          </div>
+
+          {/* Error Notice */}
+          {hasError && fileCount === 0 && (
+            <div className="mt-2 flex items-center gap-1.5 text-xs text-red-500 dark:text-red-400 font-medium animate-fade-in">
+              <FileWarning size={13} />
+              <span>Please upload your Word document to proceed</span>
+            </div>
+          )}
+        </div>
+      ) : currentFile ? (
+        /* Uploaded File Card State */
+        <div className="rounded-xl border-2 border-emerald-500/30 dark:border-emerald-500/20 bg-emerald-50/20 dark:bg-emerald-950/10 p-3.5 sm:p-4 transition-all duration-200 animate-fade-in">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            {/* File Details */}
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              {/* Document Icon */}
+              <div className="relative w-10 h-10 rounded-xl bg-blue-600 dark:bg-blue-600 flex items-center justify-center text-white shadow-sm shadow-blue-500/25 shrink-0">
+                <FileText size={20} strokeWidth={2} />
+                <span className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 border-2 border-white dark:border-slate-900 shadow-xs">
+                  <CheckCircle2 size={11} strokeWidth={3} />
+                </span>
+              </div>
+
+              {/* Name & Size */}
+              <div className="min-w-0 flex-1">
+                <p
+                  className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate"
+                  title={currentFile.name}
+                >
+                  {currentFile.name}
+                </p>
+                <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                  <span className="font-mono text-[11px]">{formatFileSize(currentFile.size)}</span>
+                  <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+                  <span className="inline-flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400 text-[11px]">
+                    <CheckCircle2 size={12} className="text-emerald-500" />
+                    Ready for generation
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Replace & Remove Actions */}
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-xs font-semibold shadow-2xs transition-all duration-200 flex items-center gap-1 cursor-pointer"
+                title="Choose a different .docx file"
+              >
+                <RefreshCw size={12} strokeWidth={2} />
+                <span>Replace</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleRemoveFile}
+                className="px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900/40 hover:border-red-300 dark:hover:border-red-800/60 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 text-xs font-semibold shadow-2xs transition-all duration-200 flex items-center gap-1 cursor-pointer"
+                title="Remove document"
+              >
+                <Trash2 size={12} strokeWidth={2} />
+                <span>Remove</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Hidden File Input */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        onChange={handleInputChange}
+        className="hidden"
+        aria-hidden="true"
+        id="data-files-input"
+      />
+
+      {/* Multi-document merge helper footer */}
+      <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+        <span>Have multiple Word files to merge first?</span>
+        <button
+          type="button"
+          onClick={onOpenMergeModal}
+          className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline cursor-pointer"
+        >
+          Merge Data Documents →
+        </button>
       </div>
     </div>
   );

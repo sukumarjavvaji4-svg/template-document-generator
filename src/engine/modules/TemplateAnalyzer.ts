@@ -15,12 +15,12 @@ export class TemplateAnalyzer implements PipelineModule {
 
   async execute(ctx: PipelineContext): Promise<PipelineContext> {
     ctx.onProgress('Analyzing template', 10);
-    ctx.templateModel = this.analyze(ctx.templateArchive!);
+    ctx.templateModel = this.analyze(ctx.templateArchive!, ctx.templateFile?.name);
     ctx.onProgress('Template analyzed', 20);
     return ctx;
   }
 
-  analyze(arc: DocxArchive): TemplateModel {
+  analyze(arc: DocxArchive, templateFileName: string = ''): TemplateModel {
     const documentXmlRaw = arc.rawXmlParts.get(PARTS.document) ?? '';
     const stylesXmlRaw = arc.rawXmlParts.get(PARTS.styles) ?? '';
     const settingsXmlRaw = arc.rawXmlParts.get(PARTS.settings) ?? null;
@@ -64,7 +64,8 @@ export class TemplateAnalyzer implements PipelineModule {
     const { sections, documentSectPrXml, patternModel } = this._extractSections(
       documentXmlRaw,
       settingsXmlRaw,
-      headerFooterParts
+      headerFooterParts,
+      templateFileName
     );
 
     // Check titlePg and evenAndOddHeaders in settings
@@ -164,7 +165,8 @@ export class TemplateAnalyzer implements PipelineModule {
   private _extractSections(
     docXml: string,
     settingsXml: string | null = null,
-    headerFooterParts: Map<string, string> = new Map()
+    headerFooterParts: Map<string, string> = new Map(),
+    templateFileName: string = ''
   ): {
     sections: SectionLayout[];
     documentSectPrXml: string;
@@ -179,11 +181,44 @@ export class TemplateAnalyzer implements PipelineModule {
       rawLayouts.push(m[0]);
     }
 
-    const documentSectPrXml = rawLayouts.length > 0
+    let documentSectPrXml = rawLayouts.length > 0
       ? rawLayouts[rawLayouts.length - 1]
       : '<w:sectPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"/>';
 
     const hasEvenOddSetting = (settingsXml ?? '').includes('<w:evenAndOddHeaders');
+    const isExplicitTwoSided = /two[-_]?sided|2[-_]?sided/i.test(templateFileName);
+    const isExplicitOneSided = /one[-_]?sided|1[-_]?sided/i.test(templateFileName);
+
+    // One-Sided mode: repeat the template header area on EVERY page.
+    // If settings has evenAndOddHeaders (e.g. from alternating footers) but sectPr lacks an even header,
+    // explicitly map w:type="even" to the same header rId so Microsoft Word renders the header on both odd and even pages.
+    if (isExplicitOneSided || !isExplicitTwoSided) {
+      const hasEvenHeader = /<w:headerReference[^>]*w:type="even"|<w:headerReference[^>]*r:id="[^"]*"[^>]*w:type="even"/.test(documentSectPrXml);
+      if (hasEvenOddSetting && !hasEvenHeader) {
+        const fullDefaultTagMatch = /<w:headerReference\b[^>]*w:type="default"[^>]*\/>/.exec(documentSectPrXml) ||
+                                    /<w:headerReference\b[^>]*\/>/.exec(documentSectPrXml);
+        if (fullDefaultTagMatch) {
+          const rIdMatch = /r:id="([^"]*)"/.exec(fullDefaultTagMatch[0]);
+          if (rIdMatch) {
+            const headerId = rIdMatch[1];
+            documentSectPrXml = documentSectPrXml.replace(
+              fullDefaultTagMatch[0],
+              `${fullDefaultTagMatch[0]}<w:headerReference w:type="even" r:id="${headerId}"/>`
+            );
+          }
+        }
+      }
+      return {
+        sections: [],
+        documentSectPrXml,
+        patternModel: {
+          layouts: [documentSectPrXml],
+          length: 1,
+        },
+      };
+    }
+
+    // Two-Sided mode: preserve exact front/back behavior of reference template
     const hasEvenHeaderInDoc = docXml.includes('w:type="even"');
     const hasEvenPart = Array.from(headerFooterParts.keys()).some(p => p.toLowerCase().includes('even'));
     const isTwoSidedSingleSection = rawLayouts.length === 1 && (hasEvenOddSetting || hasEvenHeaderInDoc || hasEvenPart);

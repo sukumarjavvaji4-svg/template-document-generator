@@ -205,3 +205,40 @@ html.dark {
   border-color: #3b82f6 !important;
   background-color: rgba(59, 130, 246, 0.04);
 }
+
+/* Engineering Blueprint Background Keyframes */
+@keyframes blueprintDrift {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.4deg);
+  }
+}
+
+@keyframes ambientPulse {
+  0%, 100% {
+    opacity: 0.65;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+.animate-blueprint-drift {
+  animation: blueprintDrift 22s ease-in-out infinite;
+}
+
+.animate-ambient-pulse {
+  animation: ambientPulse 16s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blueprint-drift,
+  .animate-ambient-pulse {
+    animation: none !important;
+  }
+}
+

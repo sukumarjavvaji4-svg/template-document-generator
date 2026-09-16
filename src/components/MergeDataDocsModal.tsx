@@ -41,7 +41,7 @@ export function MergeDataDocsModal({
   const [isDragOver, setIsDragOver] = useState(false);
   const [isMerging, setIsMerging] = useState(false);
   const [mergeResult, setMergeResult] = useState<MergeDataDocsResult | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const [previewDoc, setPreviewDoc] = useState<{ blob: Blob; fileName: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addToast } = useToast();
 
@@ -312,8 +312,18 @@ export function MergeDataDocsModal({
                       <p className="text-xs text-slate-400 dark:text-slate-400">{formatFileSize(item.size)}</p>
                     </div>
 
-                    {/* Move Up / Move Down Actions */}
+                    {/* Item Actions */}
                     <div className="flex items-center gap-1 shrink-0">
+                      {/* Preview Button */}
+                      <button
+                        type="button"
+                        onClick={() => setPreviewDoc({ blob: item.file, fileName: item.name })}
+                        title="Preview this document"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/60 transition-colors"
+                      >
+                        <Eye size={15} />
+                      </button>
+
                       <button
                         type="button"
                         onClick={() => moveItem(idx, 'up')}
@@ -332,17 +342,17 @@ export function MergeDataDocsModal({
                       >
                         <ArrowDown size={15} />
                       </button>
-                    </div>
 
-                    {/* Remove Action */}
-                    <button
-                      type="button"
-                      onClick={() => removeItem(item.id)}
-                      title="Remove"
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/60 transition-colors shrink-0"
-                    >
-                      <Trash2 size={15} />
-                    </button>
+                      {/* Remove Action */}
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.id)}
+                        title="Remove"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/60 transition-colors"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -365,7 +375,7 @@ export function MergeDataDocsModal({
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
                   type="button"
-                  onClick={() => setShowPreview(true)}
+                  onClick={() => setPreviewDoc({ blob: mergeResult.blob, fileName: 'MergedData.docx' })}
                   className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-white dark:bg-slate-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-colors"
                 >
                   <Eye size={14} />
@@ -426,17 +436,17 @@ export function MergeDataDocsModal({
         </div>
       </div>
 
-      {/* Preview Modal for MergedData.docx */}
-      {showPreview && mergeResult && mergeResult.valid && (
+      {/* Word-style Preview Modal for individual or merged document */}
+      {previewDoc && (
         <PreviewModal
-          blob={mergeResult.blob}
-          fileName="MergedData.docx"
-          onClose={() => setShowPreview(false)}
+          blob={previewDoc.blob}
+          fileName={previewDoc.fileName}
+          onClose={() => setPreviewDoc(null)}
           onDownload={() => {
-            const url = URL.createObjectURL(mergeResult.blob);
+            const url = URL.createObjectURL(previewDoc.blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'MergedData.docx';
+            a.download = previewDoc.fileName;
             a.click();
             URL.revokeObjectURL(url);
           }}

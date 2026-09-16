@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Scratch & temporary test artifacts
+scratch/
+*.tmp
+*.pdf

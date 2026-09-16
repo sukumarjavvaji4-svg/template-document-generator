@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Zap, FileCheck2, ChevronRight, Loader2 } from 'lucide-react';
-import { UploadedFile } from './types';
+import { UploadedFile, TemplateType } from './types';
 import { ToastProvider, useToast } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ThemeToggle } from './components/ThemeToggle';
@@ -10,6 +10,7 @@ import { DataDocumentsCard } from './components/DataDocumentsCard';
 import { MergeDataDocsModal } from './components/MergeDataDocsModal';
 import { GenerationProgress } from './components/GenerationProgress';
 import { GenerationResult } from './components/GenerationResult';
+import { EngineeringBackground } from './components/EngineeringBackground';
 import { UserConstraints, GenerationReport, DEFAULT_CONSTRAINTS } from './engine/types';
 import { generateDocument } from './engine/pipeline';
 
@@ -31,28 +32,21 @@ interface GenerationOutput {
 // ─── Stage 1: Upload ──────────────────────────────────────────────────────────
 
 function UploadStage({
-  templateFile, dataFiles, onTemplateChange, onDataFilesChange, onContinue,
+  selectedTemplate, onSelectTemplate, dataFiles, onDataFilesChange, onContinue,
 }: {
-  templateFile: UploadedFile | null;
+  selectedTemplate: TemplateType;
+  onSelectTemplate: (t: TemplateType) => void;
   dataFiles: UploadedFile[];
-  onTemplateChange: (f: UploadedFile | null) => void;
   onDataFilesChange: (f: UploadedFile[]) => void;
   onContinue: () => void;
 }) {
-  const [templateError, setTemplateError] = useState(false);
   const [dataError, setDataError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
   const { addToast } = useToast();
 
-  const hasTemplate = !!templateFile;
   const hasData = dataFiles.length > 0;
-  const isReady = hasTemplate && hasData;
-
-  const handleTemplateChange = useCallback((file: UploadedFile | null) => {
-    onTemplateChange(file);
-    if (file) setTemplateError(false);
-  }, [onTemplateChange]);
+  const isReady = hasData && Boolean(selectedTemplate);
 
   const handleDataFilesChange = useCallback((files: UploadedFile[]) => {
     onDataFilesChange(files);
@@ -60,19 +54,13 @@ function UploadStage({
   }, [onDataFilesChange]);
 
   const handleContinue = () => {
-    const missingTemplate = !templateFile;
-    const missingData = dataFiles.length === 0;
-    setTemplateError(missingTemplate);
-    setDataError(missingData);
-
-    if (missingTemplate || missingData) {
-      if (missingTemplate && missingData) {
-        addToast('error', 'Documents required', 'Please upload both a template and a data document.');
-      } else if (missingTemplate) {
-        addToast('error', 'Template missing', 'Please upload a template document (.docx) to continue.');
-      } else {
-        addToast('error', 'Data document missing', 'Please upload a data document (.docx) to continue.');
-      }
+    if (!selectedTemplate) {
+      addToast('error', 'Layout missing', 'Please select a document layout (One-Sided or Two-Sided).');
+      return;
+    }
+    if (dataFiles.length === 0) {
+      setDataError(true);
+      addToast('error', 'Document missing', 'Please upload your Word document (.docx) to continue.');
       return;
     }
 
@@ -81,23 +69,22 @@ function UploadStage({
   };
 
   return (
-    <div className="max-w-3xl mx-auto w-full px-4 sm:px-6 pt-10 pb-16">
-      <div className="text-center mb-10 animate-fade-in-up">
-        <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-slate-100 mb-3 tracking-tight">
-          Upload Your Documents
+    <div className="max-w-2xl mx-auto w-full px-4 sm:px-6 pt-6 pb-12">
+      {/* Hero Section */}
+      <div className="text-center mb-6 animate-fade-in-up">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
+          Create Your Document
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg max-w-md mx-auto leading-relaxed">
-          Upload the required documents to begin the{' '}
-          <span className="text-blue-600 dark:text-blue-400 font-medium">document generation</span> process.
+        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
+          Choose a document layout and upload your Word document to get started.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 mb-6">
+      <div className="grid grid-cols-1 gap-4 mb-6">
         <div className="animate-fade-in-up" style={{ animationDelay: '60ms' }}>
           <TemplateUploadCard
-            templateFile={templateFile}
-            onFileChange={handleTemplateChange}
-            hasError={templateError}
+            selectedTemplate={selectedTemplate}
+            onSelectTemplate={onSelectTemplate}
           />
         </div>
         <div className="animate-fade-in-up" style={{ animationDelay: '120ms' }}>
@@ -110,44 +97,56 @@ function UploadStage({
         </div>
       </div>
 
-      {/* Action Footer */}
-      <div className="flex items-center justify-between animate-fade-in-up" style={{ animationDelay: '180ms' }}>
-        <div className="text-xs text-slate-400 dark:text-slate-500">
-          {!hasTemplate && !hasData && 'Upload both documents to continue'}
-          {!hasTemplate && hasData && 'Upload template document to continue'}
-          {hasTemplate && !hasData && 'Upload data document to continue'}
-          {isReady && (
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-              <FileCheck2 size={13} />
-              All requirements met — ready to generate
-            </span>
-          )}
-        </div>
-
+      {/* Action CTA */}
+      <div className="animate-fade-in-up flex flex-col items-center gap-2.5 pt-1" style={{ animationDelay: '180ms' }}>
         <button
           onClick={handleContinue}
-          disabled={isLoading}
+          disabled={!isReady || isLoading}
           className={`
-            flex items-center gap-2 px-7 py-3.5 rounded-2xl text-sm font-semibold
-            transition-all duration-300 shadow-md cursor-pointer select-none
+            group w-full sm:w-auto min-w-[240px] sm:min-w-[280px] flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl text-sm sm:text-base font-bold
+            transition-all duration-300 shadow-sm select-none
             ${isReady
-              ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-200 dark:shadow-indigo-950/50 hover:shadow-lg hover:shadow-blue-300 dark:hover:shadow-indigo-900/60 active:scale-[0.98]'
-              : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed shadow-none'
+              ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:via-indigo-500 hover:to-blue-600 text-white shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer'
+              : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed shadow-none border border-slate-300/40 dark:border-slate-800'
             }
           `}
         >
           {isLoading ? (
             <>
-              <Loader2 size={16} className="animate-spin text-white" />
-              <span>Preparing...</span>
+              <Loader2 size={20} className="animate-spin text-white" />
+              <span>Preparing Generation...</span>
             </>
           ) : (
             <>
+              <Zap
+                size={20}
+                className={`transition-transform duration-200 ${
+                  isReady ? 'text-amber-300 fill-amber-300 group-hover:scale-110' : 'text-slate-400'
+                }`}
+              />
               <span>Generate Document</span>
-              <ChevronRight size={16} strokeWidth={2.5} />
+              <ChevronRight
+                size={18}
+                strokeWidth={2.5}
+                className={`transition-transform duration-200 ${
+                  isReady ? 'group-hover:translate-x-1' : ''
+                }`}
+              />
             </>
           )}
         </button>
+
+        {/* Status Indicator */}
+        <div className="text-xs text-slate-400 dark:text-slate-500 text-center">
+          {!isReady ? (
+            <span>Upload a Word document (.docx) to enable generation</span>
+          ) : (
+            <span className="text-emerald-600 dark:text-emerald-400 font-medium inline-flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Layout selected & document ready — ready to generate
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Multi-Document Merge Modal */}
@@ -168,7 +167,7 @@ function UploadStage({
 
 function AppContent() {
   const [stage, setStage] = useState<AppStage>(1);
-  const [templateFile, setTemplateFile] = useState<UploadedFile | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('onesided');
   const [dataFiles, setDataFiles] = useState<UploadedFile[]>([]);
   const [genState, setGenState] = useState<GenerationState>({
     phase: 'Initializing',
@@ -188,22 +187,45 @@ function AppContent() {
   }, []);
 
   const handleGenerate = async (constraints: UserConstraints) => {
-    if (!templateFile || dataFiles.length === 0) return;
+    if (dataFiles.length === 0) return;
 
     setStage(3);
     setOutput(null);
     setGenError(null);
 
     const start = Date.now();
-    setGenState({ phase: 'Reading files', percent: 5, startMs: start, elapsedMs: 0 });
+    setGenState({ phase: 'Loading template', percent: 5, startMs: start, elapsedMs: 0 });
 
     timerRef.current = window.setInterval(() => {
       setGenState(prev => ({ ...prev, elapsedMs: Date.now() - prev.startMs }));
     }, 100);
 
     try {
+      const templateFileName = selectedTemplate === 'onesided'
+        ? 'vnrvjiet-onesided.docx'
+        : 'vnrvjiet-twosided.docx';
+
+      const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+      const primaryUrl = `${baseUrl}/templates/${templateFileName}`;
+
+      let templateRes = await fetch(primaryUrl);
+      if (!templateRes.ok) {
+        // Fallback relative fetch in case of non-standard base URL hosting
+        templateRes = await fetch(`./templates/${templateFileName}`);
+      }
+      if (!templateRes.ok) {
+        templateRes = await fetch(`/templates/${templateFileName}`);
+      }
+      if (!templateRes.ok) {
+        throw new Error(`Failed to load template "${templateFileName}" (HTTP ${templateRes.status})`);
+      }
+      const templateBlob = await templateRes.blob();
+      const templateFile = new File([templateBlob], templateFileName, {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+
       const result = await generateDocument(
-        templateFile.file,
+        templateFile,
         dataFiles.map(d => d.file),
         constraints,
         (phase, percent) => {
@@ -233,36 +255,34 @@ function AppContent() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
-      {/* Grid background */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-100 dark:opacity-40"
-        style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(148,163,184,0.12) 1px, transparent 0)`,
-          backgroundSize: '28px 28px',
-        }}
-        aria-hidden="true"
-      />
+    <div className="min-h-screen text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200 relative selection:bg-blue-500/20 selection:text-blue-600 dark:selection:text-blue-400">
+      {/* Precision Engineering Blueprint Background System */}
+      <EngineeringBackground />
 
-      {/* Top accent */}
-      <div className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 z-40" />
+      {/* Top technical accent line */}
+      <div className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-500 z-40" />
 
       {/* Header */}
       <header className="relative z-10 border-b border-slate-200/60 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm transition-colors duration-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3.5">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-200 dark:shadow-indigo-950">
-                <Zap size={17} className="text-white" strokeWidth={2.5} />
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-sm shadow-blue-500/20 shrink-0">
+                <Zap size={16} className="text-white" strokeWidth={2.5} />
               </div>
               <div>
-                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
-                  Document Generator
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+                    Document Generator
+                  </span>
+                  <span className="hidden sm:inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/40">
+                    VNR VJIET
+                  </span>
+                </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <span className="text-xs text-slate-400 dark:text-slate-500">
-                    Stage {stage === 1 ? 1 : 2} of 2 — {stage === 1 ? 'Upload' : 'Generate'}
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    Stage {stage === 1 ? 1 : 2} of 2 — {stage === 1 ? 'Upload & Layout' : 'Generate & Export'}
                   </span>
                 </div>
               </div>
@@ -271,20 +291,28 @@ function AppContent() {
             {/* Right side: Step indicator + Theme Toggle */}
             <div className="flex items-center gap-3">
               {/* Step indicator */}
-              <div className="hidden md:flex items-center gap-1.5">
+              <div className="hidden sm:flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-full border border-slate-200/60 dark:border-slate-700/60">
                 {STEPS.map((s, i) => (
-                  <div key={s.label} className="flex items-center gap-1.5">
-                    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                  <div key={s.label} className="flex items-center gap-1">
+                    <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 ${
                       s.stage === stage
                         ? 'bg-blue-600 text-white shadow-sm'
                         : s.stage < stage
-                          ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500'
+                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium'
+                          : 'text-slate-500 dark:text-slate-400 font-normal'
                     }`}>
-                      <span>{s.stepNumber}</span>
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
+                        s.stage === stage
+                          ? 'bg-white/20 text-white font-bold'
+                          : s.stage < stage
+                            ? 'bg-emerald-500 text-white font-bold'
+                            : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                      }`}>
+                        {s.stage < stage ? '✓' : s.stepNumber}
+                      </span>
                       <span>{s.label}</span>
                     </div>
-                    {i < STEPS.length - 1 && <ChevronRight size={12} className="text-slate-300 dark:text-slate-700" />}
+                    {i < STEPS.length - 1 && <ChevronRight size={12} className="text-slate-400 dark:text-slate-600 mx-0.5" />}
                   </div>
                 ))}
               </div>
@@ -300,16 +328,16 @@ function AppContent() {
       <main className="relative z-10 flex-1 flex flex-col">
         {stage === 1 && (
           <UploadStage
-            templateFile={templateFile}
+            selectedTemplate={selectedTemplate}
+            onSelectTemplate={setSelectedTemplate}
             dataFiles={dataFiles}
-            onTemplateChange={setTemplateFile}
             onDataFilesChange={setDataFiles}
             onContinue={() => handleGenerate(DEFAULT_CONSTRAINTS)}
           />
         )}
 
         {stage === 3 && (
-          <div className="max-w-3xl mx-auto w-full px-4 sm:px-6 pt-8 pb-16">
+          <div className="max-w-2xl mx-auto w-full px-4 sm:px-6 pt-6 pb-12">
             {!output && !genError ? (
               <GenerationProgress
                 currentPhase={genState.phase}
@@ -331,7 +359,7 @@ function AppContent() {
                     ← Back to Upload
                   </button>
                   <button
-                    onClick={() => { setStage(1); setGenError(null); setTemplateFile(null); setDataFiles([]); }}
+                    onClick={() => { setStage(1); setGenError(null); setDataFiles([]); }}
                     className="px-6 py-3 rounded-2xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-all"
                   >
                     Start Over
@@ -344,7 +372,7 @@ function AppContent() {
                 blob={output.blob}
                 fileName={output.fileName}
                 onStartOver={() => {
-                  setStage(1); setOutput(null); setTemplateFile(null); setDataFiles([]);
+                  setStage(1); setOutput(null); setDataFiles([]);
                 }}
                 onEditConstraints={() => { setStage(1); setOutput(null); }}
               />
@@ -354,8 +382,8 @@ function AppContent() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-100 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm py-4 transition-colors duration-200">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400 dark:text-slate-500">
+      <footer className="relative z-10 border-t border-slate-100 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm py-3.5 transition-colors duration-200">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400 dark:text-slate-500">
           <span>Document Generator — XML-Based OOXML Engine</span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />

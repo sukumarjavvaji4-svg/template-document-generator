@@ -127,6 +127,11 @@ function pdfConverterPlugin(): Plugin {
 }
 
 export default defineConfig({
+  server: {
+    watch: {
+      ignored: ['**/scratch/**', '**/*.tmp', '**/tmp/**', '**/*.docx', '**/*.pdf'],
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
