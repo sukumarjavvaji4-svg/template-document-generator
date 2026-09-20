@@ -4,6 +4,8 @@ export interface UploadedFile {
   name: string;
   size: number;
   uploadedAt: Date;
+  isPdfSource?: boolean;
+  originalName?: string;
 }
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';

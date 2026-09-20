@@ -6,10 +6,12 @@ import {
   RefreshCw,
   Trash2,
   FileWarning,
+  Loader2,
 } from 'lucide-react';
 import { UploadedFile } from '../types';
-import { formatFileSize, generateId, isDocxFile } from '../utils';
+import { formatFileSize, generateId, isSupportedDataDoc } from '../utils';
 import { useToast } from '../context/ToastContext';
+import { convertPdfToDocx } from '../services/pdfToDocx';
 
 const MAX_FILES = 1;
 
@@ -20,8 +22,6 @@ interface DataDocumentsCardProps {
   hasError?: boolean;
 }
 
-
-
 export function DataDocumentsCard({
   dataFiles,
   onFilesChange,
@@ -29,6 +29,8 @@ export function DataDocumentsCard({
   hasError = false,
 }: DataDocumentsCardProps) {
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
+  const [convertingStatus, setConvertingStatus] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { addToast } = useToast();
   const fileCount = dataFiles.length;
@@ -37,29 +39,59 @@ export function DataDocumentsCard({
   const currentFile = dataFiles[0] || null;
 
   const processFiles = useCallback(
-    (incomingFiles: File[]) => {
+    async (incomingFiles: File[]) => {
       const validFiles: UploadedFile[] = [];
       const invalidFiles: string[] = [];
 
       for (const file of incomingFiles) {
-        if (!isDocxFile(file)) {
+        if (!isSupportedDataDoc(file)) {
           invalidFiles.push(file.name);
           continue;
         }
-        validFiles.push({
-          id: generateId(),
-          file,
-          name: file.name,
-          size: file.size,
-          uploadedAt: new Date(),
-        });
+
+        if (file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf') {
+          setIsConverting(true);
+          setConvertingStatus(`Converting "${file.name}" to Word format...`);
+          try {
+            const docxFile = await convertPdfToDocx(file, (msg) => setConvertingStatus(msg));
+            validFiles.push({
+              id: generateId(),
+              file: docxFile,
+              name: docxFile.name,
+              size: docxFile.size,
+              uploadedAt: new Date(),
+              isPdfSource: true,
+              originalName: file.name,
+            });
+            addToast(
+              'success',
+              'PDF Document Ready',
+              `"${file.name}" was converted to Word format and formatted for VNR VJIET template.`
+            );
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            addToast('error', 'PDF Conversion Failed', msg);
+          } finally {
+            setIsConverting(false);
+            setConvertingStatus('');
+          }
+        } else {
+          validFiles.push({
+            id: generateId(),
+            file,
+            name: file.name,
+            size: file.size,
+            uploadedAt: new Date(),
+            isPdfSource: false,
+          });
+        }
       }
 
       if (invalidFiles.length > 0) {
         addToast(
           'error',
           'Invalid file format',
-          'Only .docx files are accepted.'
+          'Only .docx and .pdf files are accepted.'
         );
       }
 
@@ -107,10 +139,10 @@ export function DataDocumentsCard({
       <div className="mb-3.5 flex items-center justify-between">
         <div>
           <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-            Upload Your Word Document
+            Upload Your Document
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Drag and drop your .docx file here or browse from your computer.
+            Drag and drop your .docx or .pdf file here or browse from your computer.
           </p>
         </div>
         <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
@@ -119,12 +151,23 @@ export function DataDocumentsCard({
       </div>
 
       {/* Upload Area / Uploaded State */}
-      {!isFull ? (
+      {isConverting ? (
+        /* Converting State */
+        <div className="rounded-xl border-2 border-dashed border-blue-400 dark:border-blue-700 bg-blue-50/40 dark:bg-blue-950/20 p-6 flex flex-col items-center justify-center text-center animate-pulse">
+          <Loader2 size={36} className="animate-spin text-blue-600 dark:text-blue-400 mb-3" />
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1">
+            Processing PDF Document
+          </h3>
+          <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+            {convertingStatus || 'Converting PDF to Word format...'}
+          </p>
+        </div>
+      ) : !isFull ? (
         /* Empty / Dropzone State */
         <div
           role="button"
           tabIndex={0}
-          aria-label="Upload Word document drop zone"
+          aria-label="Upload document drop zone"
           onClick={() => inputRef.current?.click()}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -147,7 +190,7 @@ export function DataDocumentsCard({
             }
           `}
         >
-          {/* Word Icon Container */}
+          {/* Document Icon Container */}
           <div
             className={`
               w-11 h-11 rounded-xl flex items-center justify-center mb-2.5 transition-all duration-200
@@ -162,7 +205,7 @@ export function DataDocumentsCard({
 
           {/* Prompt */}
           <h3 className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 tracking-tight mb-0.5">
-            {isDragOver ? 'Drop your Word document here' : 'Drag and drop your .docx file here'}
+            {isDragOver ? 'Drop your document here' : 'Drag and drop your .docx or .pdf file here'}
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
             or browse from your computer
@@ -184,7 +227,7 @@ export function DataDocumentsCard({
           {/* Format note */}
           <div className="mt-2.5 flex items-center gap-2">
             <span className="text-[10px] font-medium tracking-wide uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
-              .docx files only
+              .docx &amp; .pdf files supported
             </span>
           </div>
 
@@ -192,7 +235,7 @@ export function DataDocumentsCard({
           {hasError && fileCount === 0 && (
             <div className="mt-2 flex items-center gap-1.5 text-xs text-red-500 dark:text-red-400 font-medium animate-fade-in">
               <FileWarning size={13} />
-              <span>Please upload your Word document to proceed</span>
+              <span>Please upload your document to proceed</span>
             </div>
           )}
         </div>
@@ -212,12 +255,19 @@ export function DataDocumentsCard({
 
               {/* Name & Size */}
               <div className="min-w-0 flex-1">
-                <p
-                  className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate"
-                  title={currentFile.name}
-                >
-                  {currentFile.name}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p
+                    className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate"
+                    title={currentFile.name}
+                  >
+                    {currentFile.name}
+                  </p>
+                  {currentFile.isPdfSource && (
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 shrink-0">
+                      PDF Source
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 dark:text-slate-500">
                   <span className="font-mono text-[11px]">{formatFileSize(currentFile.size)}</span>
                   <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
@@ -235,7 +285,7 @@ export function DataDocumentsCard({
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-xs font-semibold shadow-2xs transition-all duration-200 flex items-center gap-1 cursor-pointer"
-                title="Choose a different .docx file"
+                title="Choose a different document"
               >
                 <RefreshCw size={12} strokeWidth={2} />
                 <span>Replace</span>
@@ -259,7 +309,7 @@ export function DataDocumentsCard({
       <input
         ref={inputRef}
         type="file"
-        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.pdf,application/pdf"
         onChange={handleInputChange}
         className="hidden"
         aria-hidden="true"

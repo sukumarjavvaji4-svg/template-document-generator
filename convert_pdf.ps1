@@ -4,6 +4,8 @@ param (
 )
 
 $ErrorActionPreference = "Stop"
+$DocxPath = [System.IO.Path]::GetFullPath($DocxPath)
+$PdfPath = [System.IO.Path]::GetFullPath($PdfPath)
 $word = $null
 $doc = $null
 

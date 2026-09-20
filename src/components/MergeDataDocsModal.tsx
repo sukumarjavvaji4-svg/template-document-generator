@@ -14,10 +14,11 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { UploadedFile } from '../types';
-import { formatFileSize, generateId, isDocxFile } from '../utils';
+import { formatFileSize, generateId, isSupportedDataDoc } from '../utils';
 import { useToast } from '../context/ToastContext';
 import { DataDocMerger, MergeDataDocsResult } from '../engine/modules/DataDocMerger';
 import { PreviewModal } from './PreviewModal';
+import { convertPdfToDocx } from '../services/pdfToDocx';
 
 const MAX_MERGE_FILES = 5;
 
@@ -31,6 +32,8 @@ interface MergeDocItem {
   file: File;
   name: string;
   size: number;
+  isPdfSource?: boolean;
+  originalName?: string;
 }
 
 export function MergeDataDocsModal({
@@ -40,6 +43,8 @@ export function MergeDataDocsModal({
   const [items, setItems] = useState<MergeDocItem[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isMerging, setIsMerging] = useState(false);
+  const [isConvertingPdf, setIsConvertingPdf] = useState(false);
+  const [pdfConvertingStatus, setPdfConvertingStatus] = useState('');
   const [mergeResult, setMergeResult] = useState<MergeDataDocsResult | null>(null);
   const [previewDoc, setPreviewDoc] = useState<{ blob: Blob; fileName: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -48,7 +53,7 @@ export function MergeDataDocsModal({
   // ─── File Upload Handler ──────────────────────────────────────────────────
 
   const processIncomingFiles = useCallback(
-    (incomingFiles: File[]) => {
+    async (incomingFiles: File[]) => {
       const validFiles: MergeDocItem[] = [];
       const invalidNames: string[] = [];
       const duplicateNames: string[] = [];
@@ -56,29 +61,52 @@ export function MergeDataDocsModal({
       const currentCount = items.length;
 
       for (const file of incomingFiles) {
-        if (!isDocxFile(file)) {
+        if (!isSupportedDataDoc(file)) {
           invalidNames.push(file.name);
           continue;
         }
 
-        if (items.some((it) => it.name === file.name)) {
+        if (items.some((it) => it.name === file.name || it.originalName === file.name)) {
           duplicateNames.push(file.name);
           continue;
         }
 
-        validFiles.push({
-          id: generateId(),
-          file,
-          name: file.name,
-          size: file.size,
-        });
+        if (file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf') {
+          setIsConvertingPdf(true);
+          setPdfConvertingStatus(`Converting "${file.name}" to Word format...`);
+          try {
+            const docxFile = await convertPdfToDocx(file, (msg) => setPdfConvertingStatus(msg));
+            validFiles.push({
+              id: generateId(),
+              file: docxFile,
+              name: docxFile.name,
+              size: docxFile.size,
+              isPdfSource: true,
+              originalName: file.name,
+            });
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            addToast('error', `Failed to convert "${file.name}"`, msg);
+          } finally {
+            setIsConvertingPdf(false);
+            setPdfConvertingStatus('');
+          }
+        } else {
+          validFiles.push({
+            id: generateId(),
+            file,
+            name: file.name,
+            size: file.size,
+            isPdfSource: false,
+          });
+        }
       }
 
       if (invalidNames.length > 0) {
         addToast(
           'error',
           'Invalid file format',
-          `Only .docx files are accepted: ${invalidNames.slice(0, 2).join(', ')}`
+          `Only .docx and .pdf files are accepted: ${invalidNames.slice(0, 2).join(', ')}`
         );
       }
 
@@ -233,7 +261,7 @@ export function MergeDataDocsModal({
             <div>
               <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">Merge Data Documents</h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Combine 2 to 5 data documents (.docx) in sequence into a single data document
+                Combine 2 to 5 data documents (.docx or .pdf) in sequence into a single data document
               </p>
             </div>
           </div>
@@ -252,38 +280,50 @@ export function MergeDataDocsModal({
             type="file"
             ref={fileInputRef}
             onChange={handleInputChange}
-            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.pdf,application/pdf"
             multiple
             className="hidden"
           />
 
-          <div
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onClick={() => items.length < MAX_MERGE_FILES && fileInputRef.current?.click()}
-            className={`
-              p-6 rounded-2xl border-2 border-dashed text-center cursor-pointer transition-all duration-200
-              ${isDragOver
-                ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 scale-[0.99]'
-                : items.length >= MAX_MERGE_FILES
-                ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 opacity-60 cursor-not-allowed'
-                : 'border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 bg-slate-50/40 dark:bg-slate-900/40 hover:bg-blue-50/20 dark:hover:bg-blue-950/20'
-              }
-            `}
-          >
-            <div className="w-12 h-12 rounded-2xl bg-blue-100/60 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3">
-              <Upload size={22} />
+          {isConvertingPdf ? (
+            <div className="p-6 rounded-2xl border-2 border-dashed border-blue-400 dark:border-blue-700 bg-blue-50/40 dark:bg-blue-950/20 text-center animate-pulse flex flex-col items-center justify-center">
+              <Loader2 size={32} className="animate-spin text-blue-600 dark:text-blue-400 mb-2" />
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                Processing PDF Document
+              </p>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-0.5 font-medium">
+                {pdfConvertingStatus || 'Converting PDF to Word format...'}
+              </p>
             </div>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-              {items.length >= MAX_MERGE_FILES
-                ? 'Maximum 5 files reached'
-                : 'Upload the data documents you want to merge'}
-            </p>
-            <p className="text-xs text-slate-400 dark:text-slate-400 mt-1">
-              Drag & drop or <span className="text-blue-600 dark:text-blue-400 font-medium">browse</span> (2 to 5 .docx files)
-            </p>
-          </div>
+          ) : (
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onClick={() => items.length < MAX_MERGE_FILES && fileInputRef.current?.click()}
+              className={`
+                p-6 rounded-2xl border-2 border-dashed text-center cursor-pointer transition-all duration-200
+                ${isDragOver
+                  ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 scale-[0.99]'
+                  : items.length >= MAX_MERGE_FILES
+                  ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 opacity-60 cursor-not-allowed'
+                  : 'border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 bg-slate-50/40 dark:bg-slate-900/40 hover:bg-blue-50/20 dark:hover:bg-blue-950/20'
+                }
+              `}
+            >
+              <div className="w-12 h-12 rounded-2xl bg-blue-100/60 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3">
+                <Upload size={22} />
+              </div>
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                {items.length >= MAX_MERGE_FILES
+                  ? 'Maximum 5 files reached'
+                  : 'Upload the data documents you want to merge'}
+              </p>
+              <p className="text-xs text-slate-400 dark:text-slate-400 mt-1">
+                Drag & drop or <span className="text-blue-600 dark:text-blue-400 font-medium">browse</span> (2 to 5 .docx or .pdf files)
+              </p>
+            </div>
+          )}
 
           {/* List of Files to Merge */}
           {items.length > 0 && (
@@ -308,7 +348,14 @@ export function MergeDataDocsModal({
 
                     {/* File Icon & Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{item.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{item.name}</p>
+                        {item.isPdfSource && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 shrink-0">
+                            PDF
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-slate-400 dark:text-slate-400">{formatFileSize(item.size)}</p>
                     </div>
 
