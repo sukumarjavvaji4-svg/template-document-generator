@@ -36,23 +36,3 @@ export function isDocxFile(file: File): boolean {
   // Accept if either mime type OR extension is valid (some browsers may not set mime correctly)
   return hasValidMime || hasValidExtension;
 }
-
-/**
- * Check if a file is a valid .pdf file
- */
-export function isPdfFile(file: File): boolean {
-  const validMimeTypes = ['application/pdf'];
-  const validExtensions = ['.pdf'];
-  const hasValidMime = validMimeTypes.includes(file.type);
-  const hasValidExtension = validExtensions.some((ext) =>
-    file.name.toLowerCase().endsWith(ext)
-  );
-  return hasValidMime || hasValidExtension;
-}
-
-/**
- * Check if a file is a supported data document (.docx or .pdf)
- */
-export function isSupportedDataDoc(file: File): boolean {
-  return isDocxFile(file) || isPdfFile(file);
-}
