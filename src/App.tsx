@@ -13,6 +13,7 @@ import { GenerationResult } from './components/GenerationResult';
 import { EngineeringBackground } from './components/EngineeringBackground';
 import { UserConstraints, GenerationReport, DEFAULT_CONSTRAINTS } from './engine/types';
 import { generateDocument } from './engine/pipeline';
+import { warmUpPdfService } from './services/pdfConverter';
 
 type AppStage = 1 | 2 | 3;
 
@@ -181,6 +182,7 @@ function AppContent() {
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
+    warmUpPdfService();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };

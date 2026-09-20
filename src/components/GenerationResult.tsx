@@ -48,6 +48,7 @@ export function GenerationResult({
   const [showValidation, setShowValidation] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [cachedPdfBlob, setCachedPdfBlob] = useState<Blob | null>(null);
   const [isConvertingPdf, setIsConvertingPdf] = useState(false);
   const [conversionStatus, setConversionStatus] = useState<string>('Converting PDF...');
   const [pdfError, setPdfError] = useState<string | null>(null);
@@ -58,17 +59,25 @@ export function GenerationResult({
 
   const handleDownloadPdf = async () => {
     setPdfError(null);
+    const pdfName = fileName.replace(/\.docx$/i, '') + '.pdf';
+
+    // If PDF is already loaded or cached from preview, download immediately
+    if (cachedPdfBlob) {
+      saveAs(cachedPdfBlob, pdfName);
+      return;
+    }
+
     try {
       setIsConvertingPdf(true);
-      setConversionStatus('Preparing PDF...');
+      setConversionStatus('Connecting to Word engine...');
 
-      // Universal PDF Engine: Tries native server endpoint if available;
-      // automatically falls back to browser-native A4 engine if offline/website.
+      // High-Fidelity Universal PDF Engine: Tries native server/cloud endpoint;
+      // automatically falls back to browser-native A4 engine if offline.
       const pdfBlob = await convertDocxToPdfUniversal(blob, (status) => {
         setConversionStatus(status);
       });
 
-      const pdfName = fileName.replace(/\.docx$/i, '') + '.pdf';
+      setCachedPdfBlob(pdfBlob);
       saveAs(pdfBlob, pdfName);
     } catch (err) {
       console.error('PDF conversion failed:', err);
@@ -367,6 +376,8 @@ export function GenerationResult({
           fileName={fileName}
           onClose={() => setShowPreview(false)}
           onDownload={handleDownload}
+          cachedPdfBlob={cachedPdfBlob}
+          onPdfLoaded={(loadedBlob) => setCachedPdfBlob(loadedBlob)}
         />
       )}
     </div>

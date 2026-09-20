@@ -154,46 +154,144 @@ export async function convertDocxToPdfClientSide(
 }
 
 /**
- * Universal PDF converter:
- * 1. Tries server-side native LibreOffice/Word COM API (/api/convert-pdf) with a 25-second timeout.
- * 2. If the server is offline, returns 503, 404, or times out (static websites on Vercel, Netlify, GitHub Pages, etc.),
- *    seamlessly falls back to client-side multi-page A4 slicing converter.
- * 
- * Result: All 10+ pages are preserved with zero distortion and zero squashing!
+ * Validates whether a given Blob is a valid non-empty PDF binary (%PDF-).
  */
-export async function convertDocxToPdfUniversal(
-  blob: Blob,
-  onStatusChange?: (status: string) => void
-): Promise<Blob> {
-  // Step 1: Try server API if reachable (localhost or backend microservice)
+export async function isValidPdfBlob(blob: Blob | null | undefined): Promise<boolean> {
+  if (!blob || blob.size < 500) return false;
   try {
-    onStatusChange?.('Converting document with Word engine...');
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
+    const slice = blob.slice(0, 8);
+    const arrayBuf = await slice.arrayBuffer();
+    const uint8 = new Uint8Array(arrayBuf);
+    const header = String.fromCharCode(...uint8.subarray(0, 5));
+    return header === '%PDF-';
+  } catch {
+    return false;
+  }
+}
 
-    const response = await fetch('/api/convert-pdf', {
+/**
+ * Proactively pings the cloud PDF conversion microservice to wake it up
+ * so that when the user clicks 'Preview' or 'Download PDF', the service is already hot and responds in seconds.
+ */
+export function warmUpPdfService(): void {
+  try {
+    fetch('https://template-document-generator.onrender.com/health', {
+      method: 'GET',
+      mode: 'cors',
+    }).catch(() => {});
+  } catch {}
+}
+
+/**
+ * High-Fidelity Word/LibreOffice PDF Engine:
+ * Connects directly to native conversion engines for 100% Microsoft Word visual fidelity:
+ * - On Localhost: uses local Vite PowerShell Word COM automation plugin.
+ * - On Live Website: calls the dedicated Render LibreOffice service directly (bypassing Vercel proxy timeouts).
+ * - Fallback: relative proxy endpoint.
+ */
+export async function fetchHighFidelityPdf(
+  blob: Blob,
+  onStatusChange?: (status: string) => void,
+  timeoutMs = 55000
+): Promise<Blob | null> {
+  const isLocal = typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+  // Strategy 1 (Localhost): Use local Vite plugin with native Word COM / LibreOffice
+  if (isLocal) {
+    try {
+      onStatusChange?.('Converting with local Word engine...');
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), Math.min(timeoutMs, 25000));
+      const res = await fetch('/api/convert-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body: blob,
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      if (res.ok) {
+        const pdfBlob = await res.blob();
+        if (await isValidPdfBlob(pdfBlob)) return pdfBlob;
+      }
+    } catch (e) {
+      console.warn('Local Word COM conversion unavailable:', e);
+    }
+  }
+
+  // Strategy 2 (Web / Production): Call the dedicated LibreOffice cloud service directly
+  // Direct HTTPS call avoids Vercel 10s gateway proxy timeouts and preserves full Word layout.
+  const RENDER_DIRECT_URL = 'https://template-document-generator.onrender.com/api/convert-pdf';
+  try {
+    onStatusChange?.('Connecting to Word conversion engine...');
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    // Realistic milestone feedback while document converts
+    const t1 = setTimeout(() => onStatusChange?.('Formatting Microsoft Word layout...'), 3500);
+    const t2 = setTimeout(() => onStatusChange?.('Rendering tables, borders & styling...'), 12000);
+    const t3 = setTimeout(() => onStatusChange?.('Finalizing PDF document...'), 22000);
+
+    const res = await fetch(RENDER_DIRECT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/octet-stream' },
       body: blob,
       signal: controller.signal,
     });
-    clearTimeout(timeout);
 
-    if (response.ok) {
-      const pdfBlob = await response.blob();
-      const arrayBuf = await pdfBlob.arrayBuffer();
-      const uint8 = new Uint8Array(arrayBuf);
-      const header = String.fromCharCode(...uint8.subarray(0, 5));
+    clearTimeout(timer);
+    clearTimeout(t1);
+    clearTimeout(t2);
+    clearTimeout(t3);
 
-      if (pdfBlob.size > 0 && header === '%PDF-') {
-        return pdfBlob;
-      }
+    if (res.ok) {
+      const pdfBlob = await res.blob();
+      if (await isValidPdfBlob(pdfBlob)) return pdfBlob;
     }
-  } catch (err) {
-    console.warn('Backend PDF endpoint unavailable or timed out. Switching to browser-native engine:', err);
+  } catch (e) {
+    console.warn('Direct cloud conversion unavailable or timed out:', e);
   }
 
-  // Step 2: Reliable browser-native client-side fallback
+  // Strategy 3: Relative Vercel proxy fallback
+  if (!isLocal) {
+    try {
+      onStatusChange?.('Connecting via proxy...');
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+      const res = await fetch('/api/convert-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body: blob,
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      if (res.ok) {
+        const pdfBlob = await res.blob();
+        if (await isValidPdfBlob(pdfBlob)) return pdfBlob;
+      }
+    } catch (e) {
+      console.warn('Proxy conversion unavailable:', e);
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Universal PDF converter:
+ * 1. Executes fetchHighFidelityPdf to guarantee 100% Microsoft Word layout, borders, and fonts.
+ * 2. If completely offline, falls back to the client-side precision A4 multi-page slicing engine.
+ */
+export async function convertDocxToPdfUniversal(
+  blob: Blob,
+  onStatusChange?: (status: string) => void
+): Promise<Blob> {
+  const highFidelityPdf = await fetchHighFidelityPdf(blob, onStatusChange, 55000);
+  if (highFidelityPdf) {
+    return highFidelityPdf;
+  }
+
+  // Fallback for complete offline mode
   onStatusChange?.('Generating multi-page PDF in browser...');
   return await convertDocxToPdfClientSide(blob, (current, total) => {
     onStatusChange?.(`Converting page ${current} of ${total}...`);

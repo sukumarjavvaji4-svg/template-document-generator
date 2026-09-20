@@ -11,14 +11,25 @@ import {
 } from 'lucide-react';
 import { renderAsync } from 'docx-preview';
 
+import { fetchHighFidelityPdf } from '../services/pdfConverter';
+
 interface PreviewModalProps {
   blob: Blob;
   fileName: string;
   onClose: () => void;
   onDownload: () => void;
+  cachedPdfBlob?: Blob | null;
+  onPdfLoaded?: (pdf: Blob) => void;
 }
 
-export function PreviewModal({ blob, fileName, onClose, onDownload }: PreviewModalProps) {
+export function PreviewModal({
+  blob,
+  fileName,
+  onClose,
+  onDownload,
+  cachedPdfBlob,
+  onPdfLoaded,
+}: PreviewModalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -35,36 +46,29 @@ export function PreviewModal({ blob, fileName, onClose, onDownload }: PreviewMod
     setUseFallback(false);
 
     async function loadPreview() {
+      // 0. If PDF was already converted or cached, load immediately with zero wait
+      if (cachedPdfBlob) {
+        if (!isMounted) return;
+        createdUrl = URL.createObjectURL(cachedPdfBlob);
+        setPdfUrl(createdUrl);
+        setLoading(false);
+        return;
+      }
+
       // 1. Primary high-fidelity renderer:
-      // Request native Word/LibreOffice A4 paginated render from the local endpoint with a 3.5s timeout
+      // Request native Word/LibreOffice A4 paginated render from direct cloud/local engine
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-        const response = await fetch('/api/convert-pdf', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/octet-stream' },
-          body: blob,
-          signal: controller.signal,
-        });
-        clearTimeout(timeoutId);
-
-        if (response.ok) {
-          const pdfBlob = await response.blob();
-          const arrayBuf = await pdfBlob.arrayBuffer();
-          const uint8 = new Uint8Array(arrayBuf);
-          const header = String.fromCharCode(...uint8.subarray(0, 5));
-
-          if (pdfBlob.size > 0 && header === '%PDF-') {
-            if (!isMounted) return;
-            createdUrl = URL.createObjectURL(pdfBlob);
-            setPdfUrl(createdUrl);
-            setLoading(false);
-            return;
-          }
+        const highFidelityPdf = await fetchHighFidelityPdf(blob, undefined, 45000);
+        if (highFidelityPdf) {
+          if (!isMounted) return;
+          createdUrl = URL.createObjectURL(highFidelityPdf);
+          setPdfUrl(createdUrl);
+          setLoading(false);
+          onPdfLoaded?.(highFidelityPdf);
+          return;
         }
       } catch (e) {
-        console.warn('Native Word rendering service unavailable or timed out, falling back to client-side renderer:', e);
+        console.warn('Native Word rendering service unavailable, falling back to client-side renderer:', e);
       }
 
       // 2. Client-side fallback renderer (docx-preview)
