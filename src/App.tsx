@@ -14,6 +14,10 @@ import { EngineeringBackground } from './components/EngineeringBackground';
 import { UserConstraints, GenerationReport, DEFAULT_CONSTRAINTS } from './engine/types';
 import { generateDocument } from './engine/pipeline';
 import { warmUpPdfService } from './services/pdfConverter';
+import { MaintenancePage } from './components/MaintenancePage';
+
+// Flag to put the website under maintenance mode and block all access
+export const IS_MAINTENANCE_MODE = true;
 
 type AppStage = 1 | 2 | 3;
 
@@ -400,6 +404,14 @@ function AppContent() {
 }
 
 export default function App() {
+  if (IS_MAINTENANCE_MODE) {
+    return (
+      <ThemeProvider>
+        <MaintenancePage />
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider>
       <ToastProvider>
