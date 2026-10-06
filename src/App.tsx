@@ -16,8 +16,12 @@ import { generateDocument } from './engine/pipeline';
 import { warmUpPdfService } from './services/pdfConverter';
 import { MaintenancePage } from './components/MaintenancePage';
 
-// Flag to put the website under maintenance mode and block all access
-export const IS_MAINTENANCE_MODE = true;
+// Flag to put the production website under maintenance mode while allowing localhost to work normally
+export const IS_MAINTENANCE_MODE =
+  typeof window !== 'undefined'
+    ? !['localhost', '127.0.0.1'].includes(window.location.hostname) &&
+      !window.location.search.includes('bypass=true')
+    : false;
 
 type AppStage = 1 | 2 | 3;
 
