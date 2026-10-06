@@ -30,4 +30,9 @@ try {
     if ($doc) { try { $doc.Close([ref]0) } catch {} }
     if ($word) { try { $word.Quit() } catch {} }
     exit 1
+} finally {
+    if ($doc) { try { [System.Runtime.InteropServices.Marshal]::ReleaseComObject($doc) | Out-Null } catch {} }
+    if ($word) { try { [System.Runtime.InteropServices.Marshal]::ReleaseComObject($word) | Out-Null } catch {} }
+    [System.GC]::Collect()
+    [System.GC]::WaitForPendingFinalizers()
 }
