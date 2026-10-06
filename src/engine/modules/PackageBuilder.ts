@@ -58,7 +58,8 @@ export class PackageBuilder implements PipelineModule {
     const report = ctx.validationReport;
 
     try {
-      const generatedZip = await JSZip.loadAsync(blob);
+      const arrayBuffer = await blob.arrayBuffer();
+      const generatedZip = await JSZip.loadAsync(arrayBuffer);
 
       // Check required XML files exist in output ZIP
       const docXmlEntry = generatedZip.file(PARTS.document);
@@ -97,7 +98,7 @@ export class PackageBuilder implements PipelineModule {
         const relsXmlStr = await relsXmlEntry.async('string');
         const parser = new DOMParser();
         const relsDom = parser.parseFromString(relsXmlStr, 'application/xml');
-        const relElements = Array.from(relsDom.querySelectorAll('Relationship'));
+        const relElements = Array.from(relsDom.getElementsByTagName('Relationship'));
 
         for (const relEl of relElements) {
           const id = relEl.getAttribute('Id') ?? '';

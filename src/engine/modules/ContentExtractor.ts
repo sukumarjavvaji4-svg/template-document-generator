@@ -2,7 +2,7 @@ import {
   DocxArchive, PipelineContext, PipelineModule, ContentModel,
   DataContentNode, RelEntry,
 } from '../types';
-import { PARTS, REL_TYPES } from '../utils/ooxml';
+import { PARTS, REL_TYPES, ensureXmlSpacePreserved } from '../utils/ooxml';
 import { ArchiveParser } from './ArchiveParser';
 
 // ─── Content Extractor ────────────────────────────────────────────────────────
@@ -132,18 +132,51 @@ export class ContentExtractor implements PipelineModule {
       // declarations are stripped later by MergeEngine._stripRedundantNamespaces.
       let xmlString = serializer.serializeToString(el);
 
-      // ── Strip <w:sectPr> from data document paragraphs ────────────────
+      // ── Strip <w:sectPr> from data document paragraphs & preserve page breaks ──
       // Data doc paragraphs may contain <w:sectPr> from the data doc's own
       // section structure. Those sectPr elements reference r:id values from
-      // the data doc's relationship file (e.g. its headers/footers).
-      // Those r:ids DON'T EXIST in the merged document.xml.rels.
-      // Leaving them in creates corrupted sections with broken references.
-      // We strip them here and let MergePlanner add proper section breaks.
+      // the data doc's relationship file (e.g. its headers/footers) which don't
+      // exist in the merged document.
+      // However, in Word, a section break marks the start of a NEW PAGE.
+      // If we simply drop the sectPr and skip the paragraph, all page boundaries from
+      // the original document are destroyed, causing sections to merge onto previous pages!
       if (xmlString.includes('<w:sectPr') || xmlString.includes('sectPr')) {
         xmlString = this._stripSectPr(xmlString);
-        // If stripping left an effectively empty paragraph, skip it
-        if (this._isEmptyParagraph(xmlString)) continue;
+        // If stripping left an effectively empty paragraph, this paragraph's sole role was to break section/page.
+        // Convert it to an explicit page break paragraph so the new page layout is preserved!
+        if (this._isEmptyParagraph(xmlString)) {
+          const pbXml = '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:br w:type="page"/></w:r></w:p>';
+          nodes.push({
+            xmlString: pbXml,
+            kind: 'paragraph',
+            referencedRelIds: [],
+            referencedStyleIds: [],
+            referencedNumIds: [],
+          });
+          continue;
+        } else {
+          // If the paragraph had content AND a section break, push the sanitized paragraph AND an explicit page break
+          xmlString = ensureXmlSpacePreserved(xmlString);
+          const kind = this._classifyElement(el);
+          const referencedRelIds = this._findRelIds(xmlString);
+          const referencedStyleIds = this._findStyleIds(xmlString);
+          const referencedNumIds = this._findNumIds(xmlString);
+          nodes.push({ xmlString, kind, referencedRelIds, referencedStyleIds, referencedNumIds });
+
+          const pbXml = '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:br w:type="page"/></w:r></w:p>';
+          nodes.push({
+            xmlString: pbXml,
+            kind: 'paragraph',
+            referencedRelIds: [],
+            referencedStyleIds: [],
+            referencedNumIds: [],
+          });
+          continue;
+        }
       }
+
+      // Ensure all text elements preserve spaces correctly (prevents words fusing together)
+      xmlString = ensureXmlSpacePreserved(xmlString);
 
       // Skip if serialization produced nothing useful
       if (!xmlString || xmlString.trim().length < 5) continue;

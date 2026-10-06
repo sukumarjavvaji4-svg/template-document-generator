@@ -163,7 +163,8 @@ export class MergePlanner implements PipelineModule {
           mergedStyleIds.add(newId);
           styleIdMap.set(styleId, newId);
           // Update w:styleId in the style element itself (MUST match the renamed ID)
-          const renamedXml = rawXml.replace(/w:styleId="[^"]*"/, `w:styleId="${newId}"`);
+          let renamedXml = rawXml.replace(/w:styleId="[^"]*"/, `w:styleId="${newId}"`);
+          renamedXml = renamedXml.replace(/\bw:default="[^"]*"/g, '');
           styleAdditions.push({ xmlString: renamedXml, styleId: newId });
         } else {
           // No conflict — add as-is, no renaming needed

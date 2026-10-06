@@ -108,3 +108,22 @@ export const STRUCTURAL_REL_TYPES = new Set([
   REL_TYPES.comments,
   REL_TYPES.customXml,
 ]);
+
+/**
+ * Ensures any <w:t> element containing leading, trailing, or whitespace-only content
+ * has the xml:space="preserve" attribute. Without this, Word and LibreOffice strip
+ * the whitespace, causing words to join together (e.g. "notesappsleadstooverspending").
+ */
+export function ensureXmlSpacePreserved(xml: string): string {
+  return xml.replace(/<w:t(\b[^>]*)?>([\s\S]*?)<\/w:t>/g, (match, attrs, text) => {
+    const existingAttrs = attrs || '';
+    if (
+      (text.startsWith(' ') || text.endsWith(' ') || text === ' ' || /^\s+$/.test(text) || text.includes('\n') || text.includes('\t')) &&
+      !existingAttrs.includes('xml:space')
+    ) {
+      return `<w:t xml:space="preserve"${existingAttrs}>${text}</w:t>`;
+    }
+    return match;
+  });
+}
+

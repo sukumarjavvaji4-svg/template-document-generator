@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import { ensureXmlSpacePreserved } from '../utils/ooxml';
 
 export interface MergeDataDocsResult {
   blob: Blob;
@@ -404,8 +405,16 @@ ${numsK.join('\n')}
             }
           }
 
-          // Strip internal sectPr from body content (except final section properties)
-          xmlStr = xmlStr.replace(/<w:sectPr\b[^>]*>[\s\S]*?<\/w:sectPr>/g, '');
+          // Preserve internal sectPr as page breaks so sections start on new pages
+          if (xmlStr.includes('<w:sectPr') || xmlStr.includes('sectPr')) {
+            xmlStr = xmlStr.replace(/<w:sectPr\b[^>]*>[\s\S]*?<\/w:sectPr>/g, '');
+            xmlStr = xmlStr.replace(/<w:sectPr\b[^>]*\/>/g, '');
+            if (xmlStr.replace(/<[^>]+>/g, '').trim() === '') {
+              xmlStr = '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:br w:type="page"/></w:r></w:p>';
+            } else {
+              xmlStr += '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:br w:type="page"/></w:r></w:p>';
+            }
+          }
 
           mergedBodyItems.push(xmlStr);
         }
@@ -456,7 +465,7 @@ ${finalSectPr}
 </w:document>`;
 
       // Update package files in baseZip
-      baseZip.file('word/document.xml', finalDocXml);
+      baseZip.file('word/document.xml', ensureXmlSpacePreserved(finalDocXml));
       baseZip.file('word/styles.xml', baseStylesXml);
       baseZip.file('word/_rels/document.xml.rels', mergedRelsXml);
       if (baseNumberingXml) {

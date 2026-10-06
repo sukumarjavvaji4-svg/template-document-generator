@@ -2,7 +2,7 @@ import {
   PipelineContext, PipelineModule, DocumentModel, TemplateModel,
   MergePlan, MergeItem, RelEntry, FootnoteAddition,
 } from '../types';
-import { PARTS, REL_TYPES } from '../utils/ooxml';
+import { PARTS, REL_TYPES, ensureXmlSpacePreserved } from '../utils/ooxml';
 
 // ─── Merge Engine ─────────────────────────────────────────────────────────────
 // Stage 7: THE ONLY STAGE THAT MODIFIES XML.
@@ -156,7 +156,7 @@ export class MergeEngine implements PipelineModule {
       + '\n'
       + afterBody;
 
-    return this._ensureXmlDecl(finalDocXml);
+    return this._ensureXmlDecl(ensureXmlSpacePreserved(finalDocXml));
   }
 
   private _findLastSectPrStart(bodyContent: string): number | null {
@@ -415,8 +415,10 @@ ${entries}
       // Remove this declaration from the string
       result = result.split(decl).join('');
     }
-    // Clean up any double spaces left by removal
-    result = result.replace(/  +/g, ' ').replace(/ >/g, '>').replace(/ \/>/g, '/>');
+    // Clean up any double spaces left by removal inside XML tags only (never touch text content)
+    result = result.replace(/<[^>]+>/g, (tag) => {
+      return tag.replace(/  +/g, ' ').replace(/ >/g, '>').replace(/ \/>/g, '/>');
+    });
     return result;
   }
 
